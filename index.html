@@ -114,6 +114,11 @@
                 // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
                 navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
 
+                // 豐原車站/@24.2541968, 120.7212929
+                curlat = 24.2541968;
+                curlng = 120.7212929;
+                var Mapdata = initMap(curlat, curlng);
+
                 function success(pos) {
                     // Location found, show map with these coordinates
                     // console.log("經度: " + pos.coords.latitude);
@@ -169,8 +174,6 @@
                 // 豐原車站/@24.2541968,120.7212929
                 alert("無法定位! 預設座標至豐原火車站");
 
-                var Mapdata = initMap(curlat, curlng);
-
                 $.ajax({
                     type: "GET",
                     url: dataAPI,
@@ -188,8 +191,6 @@
                     }
                 });
             }
-
-            var Mapdata = initMap(curlat, curlng);
 
             $.ajax({
                 type: "GET",
@@ -365,9 +366,7 @@
         function initMap(curlat, curlng) {
 
             // 豐原車站/@24.2541968,120.7212929
-
-            if (typeof curlat === "undefined" && typeof curlng === "undefined") { var map = L.map('map').setView([24.2551968, 120.7212929], 18); }
-            else { var map = L.map('map').setView([curlat, curlng], 16); }
+             var map = L.map('map').setView([curlat, curlng], 16);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
