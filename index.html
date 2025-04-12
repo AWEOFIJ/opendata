@@ -102,7 +102,7 @@
         fylng = 120.7226995;
 
         printMap();
-        setInterval(updateContent, 30000); // Update every 30 seconds
+        setInterval(updateContent, 20000); // Update every 30 seconds
 
         function printMap() {
             $(function () {
@@ -116,7 +116,7 @@
                     fail();
                 } else {
                     // 豐原車站/@24.2541968,120.7212929
-                    alert("無法定位! 預設座標至豐原火車站");
+                    // alert("無法定位! 預設座標至豐原火車站");
 
                     $.ajax({
                         type: "GET",
@@ -142,9 +142,9 @@
         }
 
         function updateContent() {
-            const contentDiv = document.getElementById('map');
+            var contentDiv = document.getElementById('map');
             // contentDiv.textContent = `Updated Content: ${new Date().toLocaleTimeString()}`;
-            contentDiv.textContent = `Updated Content: ${printMap()}`;
+            contentDiv.document = printMap();
         }
 
         function success(position) {
@@ -180,7 +180,7 @@
 
         function fail(error) {
             // 豐原車站/@24.2541968,120.7212929
-            alert("無法定位! 預設座標至豐原火車站");
+            // alert("無法定位! 預設座標至豐原火車站");
 
             $.ajax({
                 type: "GET",
