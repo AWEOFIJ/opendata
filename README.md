@@ -1,2 +1,2 @@
 # HTML
-html web
+this repository put html files.
