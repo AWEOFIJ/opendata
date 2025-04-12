@@ -145,6 +145,8 @@
                 function fail(error) {
                     // 豐原車站/@24.2541968,120.7212929
                     alert("無法定位! 預設座標至豐原火車站");
+                    curlat = 24.2541968;
+                    curlng = 120.7212929;
 
                     // var map = L.map('map').setView([curlat, curlng], 16);
                     var Mapdata = initMap(curlat, curlng);
@@ -169,6 +171,8 @@
             } else {
                 // 豐原車站/@24.2541968,120.7212929
                 alert("無法定位! 預設座標至豐原火車站");
+                curlat = 24.2541968;
+                curlng = 120.7212929;
 
                 // var map = L.map('map').setView([curlat, curlng], 16);
                 var Mapdata = initMap(curlat, curlng);
