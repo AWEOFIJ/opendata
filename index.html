@@ -90,99 +90,39 @@
 
     <script>
 
-        var curlat, curlng;
+        var curlat, curlng, fylat, fylng, Mapdata;
         const dataAPI = "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json";
         const newAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/39ff2c7e-6d49-4638-bb66-9102fad4a0fb"
 
+        // 豐原車站/@24.2541968, 120.7212929
+        // 豐原車站/@24.2543403,120.7226995
+
+        fylat = 24.2543403;
+        fylng = 120.7226995;
+
         $(function () {
 
-            // L.marker([24.172518, 120.611602]).addTo(map)
-            //     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-            //     .openPopup();
-
-            // L.marker([24.173703, 120.613587]).addTo(map)
-            //     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-            //     .openPopup();
-
-            // L.marker([24.169489, 120.612126]).addTo(map)
-            //     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-            //     .openPopup();
+            // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
+            navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
 
             /* 2025.04.12 */
             if (navigator.geolocation) {
-
-                // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
-                navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
-
-                // 豐原車站/@24.2541968, 120.7212929
-                // var Mapdata = initMap(curlat, curlng);
-
-                function success(pos) {
-                    // Location found, show map with these coordinates
-                    // console.log("經度: " + pos.coords.latitude);
-                    // console.log("緯度: " + pos.coords.longitude);
-                    curlat = pos.coords.latitude;
-                    curlng = pos.coords.longitude;
-
-                    // var map = L.map('map').setView([curlat, curlng], 16);
-                    var Mapdata = initMap(curlat, curlng);
-
-                    $.ajax({
-                        type: "GET",
-                        url: dataAPI,
-                        dataType: "json",
-                        success: function (data) {
-                            data.latitude = curlat;
-                            data.longitude = curlng;
-                            data.map = Mapdata.map;
-                            data.markers = Mapdata.markers;
-                            //
-                            show(data);
-                        },
-                        error: function () {
-                            alert("opendata error");
-                        }
-                    });
-                }
-
-                function fail(error) {
-                    // 豐原車站/@24.2541968,120.7212929
-                    alert("無法定位! 預設座標至豐原火車站");
-                    curlat = 24.2541968;
-                    curlng = 120.7212929;
-                    var Mapdata = initMap(curlat, curlng);
-
-                    $.ajax({
-                        type: "GET",
-                        url: dataAPI,
-                        dataType: "json",
-                        success: function (data) {
-                            data.latitude = curlat;
-                            data.longitude = curlng;
-                            data.map = Mapdata.map;
-                            data.markers = Mapdata.markers;
-                            //
-                            show(data);
-                        },
-                        error: function () {
-                            alert("opendata error");
-                        }
-                    });
-                }
+                success();
+                fail();
             } else {
                 // 豐原車站/@24.2541968,120.7212929
                 alert("無法定位! 預設座標至豐原火車站");
-                curlat = 24.2541968;
-                curlng = 120.7212929;
-                var Mapdata = initMap(curlat, curlng);
 
                 $.ajax({
                     type: "GET",
                     url: dataAPI,
                     dataType: "json",
                     success: function (data) {
-                        data.latitude = curlat;
-                        data.longitude = curlng;
+
+                        Mapdata = initMap(fylat, fylng);
+
+                        data.latitude = fylat;
+                        data.longitude = fylng;
                         data.map = Mapdata.map;
                         data.markers = Mapdata.markers;
                         //
@@ -194,27 +134,22 @@
                 });
             }
 
-            // 豐原車站/@24.2541968,120.7212929
-            curlat = 24.2541968;
-            curlng = 120.7212929;
-            var Mapdata = initMap(curlat, curlng);
-
-            $.ajax({
-                type: "GET",
-                url: dataAPI,
-                dataType: "json",
-                success: function (data) {
-                    data.latitude = curlat;
-                    data.longitude = curlng;
-                    data.map = Mapdata.map;
-                    data.markers = Mapdata.markers;
-                    //
-                    show(data);
-                },
-                error: function () {
-                    alert("api error");
-                }
-            });
+            // $.ajax({
+            //     type: "GET",
+            //     url: dataAPI,
+            //     dataType: "json",
+            //     success: function (data) {
+            //         data.latitude = curlat;
+            //         data.longitude = curlng;
+            //         data.map = Mapdata.map;
+            //         data.markers = Mapdata.markers;
+            //         //
+            //         show(data);
+            //     },
+            //     error: function () {
+            //         alert("api error");
+            //     }
+            // });
 
             // $.ajax({
             //     type: "GET",
@@ -227,16 +162,63 @@
             // });
         });
 
+        function success(position) {
+            // Location found, show map with these coordinates
+            // console.log("經度: " + pos.coords.latitude);
+            // console.log("緯度: " + pos.coords.longitude);
+            curlat = position.coords.latitude;
+            curlng = position.coords.longitude;
+
+            console.log("su_經度: " + curlat);
+            console.log("su_緯度: " + curlng);
+
+            $.ajax({
+                type: "GET",
+                url: dataAPI,
+                dataType: "json",
+                success: function (data) {
+                    
+                    Mapdata = initMap(curlat, curlng);
+
+                    data.latitude = curlat;
+                    data.longitude = curlng;
+                    data.map = Mapdata.map;
+                    data.markers = Mapdata.markers;
+                    //
+                    show(data);
+                },
+                error: function () {
+                    alert("opendata error");
+                }
+            });
+        }
+
+        function fail(error) {
+            // 豐原車站/@24.2541968,120.7212929
+            alert("無法定位! 預設座標至豐原火車站");
+
+            $.ajax({
+                type: "GET",
+                url: dataAPI,
+                dataType: "json",
+                success: function (data) {
+
+                    Mapdata = initMap(fylat, fylng);
+
+                    data.latitude = fylat;
+                    data.longitude = fylng;
+                    data.map = Mapdata.map;
+                    data.markers = Mapdata.markers;
+                    //
+                    show(data);
+                },
+                error: function () {
+                    alert("opendata error");
+                }
+            });
+        }
+
         function show(data) {
-
-            // console.log(data);
-            // console.log(data.features[0].geometry.coordinates[1]);
-            // console.log(data.features[0].geometry.coordinates[0]);
-
-            var map = data.map;
-            var markers = data.markers;
-            curlat = data.latitude;
-            curlng = data.longitude;
 
             var redIcon = new L.Icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -283,7 +265,20 @@
                 shadowSize: [41, 41]
             });
 
-            markers.addLayer(L.marker([curlat, curlng], { icon: goldIcon }).bindPopup("定位完成!"));
+            // console.log(data);
+            // console.log(data.features[0].geometry.coordinates[1]);
+            // console.log(data.features[0].geometry.coordinates[0]);
+
+            var map = data.map;
+            var markers = data.markers;
+
+            // curlat = data.latitude;
+            // curlng = data.longitude;
+
+            console.log("___經度: " + data.latitude);
+            console.log("___緯度: " + data.longitude);
+
+            markers.addLayer(L.marker([data.latitude, data.longitude], { icon: goldIcon }).bindPopup("定位完成!"));
             // markers.addLayer(L.marker([24.173703, 120.613587]));
             // markers.addLayer(L.marker([24.169489, 120.612126]));
 
@@ -372,19 +367,18 @@
         //     map.addLayer(markers);
         // }
 
-        function initMap(curlat, curlng) {
+        function initMap(lat, lng) {
 
-            // 豐原車站/@24.2541968,120.7212929
-            var map = L.map('map').setView([curlat, curlng], 16);
+            var map = L.map('map').setView([lat, lng], 17);
+
+            console.log("經度: " + lat);
+            console.log("緯度: " + lng);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
             var markers = L.markerClusterGroup().addTo(map);
-            // markers.addLayer(L.marker([24.172518, 120.611602]));
-            // markers.addLayer(L.marker([24.173703, 120.613587]));
-            // markers.addLayer(L.marker([24.169489, 120.612126]));
             map.addLayer(markers);
 
             var initmap = { map: map, markers: markers };
