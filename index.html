@@ -133,33 +133,6 @@
                     }
                 });
             }
-
-            // $.ajax({
-            //     type: "GET",
-            //     url: dataAPI,
-            //     dataType: "json",
-            //     success: function (data) {
-            //         data.latitude = curlat;
-            //         data.longitude = curlng;
-            //         data.map = Mapdata.map;
-            //         data.markers = Mapdata.markers;
-            //         //
-            //         show(data);
-            //     },
-            //     error: function () {
-            //         alert("api error");
-            //     }
-            // });
-
-            // $.ajax({
-            //     type: "GET",
-            //     url: newAPI,
-            //     dataType: "json",
-            //     success: showNew,
-            //     error: function () {
-            //         alert("api error");
-            //     }
-            // });
         });
 
         function success(position) {
@@ -279,8 +252,6 @@
             // console.log("___緯度: " + data.longitude);
 
             markers.addLayer(L.marker([data.latitude, data.longitude], { icon: goldIcon }).bindPopup("定位完成!"));
-            // markers.addLayer(L.marker([24.173703, 120.613587]));
-            // markers.addLayer(L.marker([24.169489, 120.612126]));
 
             for (var i = 0; i < data.features.length; i++) {
                 if (data.features[i].properties.mask_adult < 20) {
@@ -296,84 +267,13 @@
             map.addLayer(markers);
         }
 
-        // function showNew(data) {
-        //     // var map = L.map('map').setView([curlat, curlng], 16);
-        //     // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        //     //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        //     // }).addTo(map);
-        //     // var markers = L.markerClusterGroup().addTo(map);
-
-        //     var Mapdata = initMap();
-        //     var map = Mapdata.map;
-        //     var markers = Mapdata.markers;
-
-        //     var redIcon = new L.Icon({
-        //         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-        //         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        //         iconSize: [25, 41],
-        //         iconAnchor: [12, 41],
-        //         popupAnchor: [1, -34],
-        //         shadowSize: [41, 41]
-        //     });
-
-        //     var yellowIcon = new L.Icon({
-        //         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-        //         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        //         iconSize: [25, 41],
-        //         iconAnchor: [12, 41],
-        //         popupAnchor: [1, -34],
-        //         shadowSize: [41, 41]
-        //     });
-
-        //     var greenIcon = new L.Icon({
-        //         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        //         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        //         iconSize: [25, 41],
-        //         iconAnchor: [12, 41],
-        //         popupAnchor: [1, -34],
-        //         shadowSize: [41, 41]
-        //     });
-
-        //     var blueIcon = new L.Icon({
-        //         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-        //         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        //         iconSize: [25, 41],
-        //         iconAnchor: [12, 41],
-        //         popupAnchor: [1, -34],
-        //         shadowSize: [41, 41]
-        //     });
-
-        //     console.log(data);
-        //     console.log(data.features[0].geometry.coordinates[1]);
-        //     console.log(data.features[0].geometry.coordinates[0]);
-
-        //     // markers.addLayer(L.marker([curlat, curlng]).bindPopup("你在這兒!!"));
-        //     // markers.addLayer(L.marker([curlat, curlng], { icon: blackIcon }).bindPopup("你在這兒!!"));
-        //     // markers.addLayer(L.marker([24.173703, 120.613587]));
-        //     // markers.addLayer(L.marker([24.169489, 120.612126]));
-
-        //     // for (var i = 0; i < data.features.length; i++) {
-        //     //     if (data.features[i].properties.mask_adult < 20) {
-        //     //         // markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: redIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p></div></div>'));
-        //     //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: redIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-        //     //     } else if (data.features[i].properties.mask_adult >= 30 && data.features[i].properties.mask_adult < 72) {
-        //     //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: yellowIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-        //     //     } else if (data.features[i].properties.mask_adult >= 72 && data.features[i].properties.mask_adult < 150) {
-        //     //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: greenIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-        //     //     } else if (data.features[i].properties.mask_adult > 150) {
-        //     //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-        //     //     }
-        //     // }
-        //     map.addLayer(markers);
-        // }
-
         function initMap(lat, lng) {
-
-            var map = L.map('map').setView([lat, lng], 17);
 
             // console.log("經度: " + lat);
             // console.log("緯度: " + lng);
-
+            
+            var map = L.map('map').setView([lat, lng], 17);
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
