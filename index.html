@@ -101,46 +101,51 @@
         fylat = 24.2543403;
         fylng = 120.7226995;
 
-        $(function () {
-
-            // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
-            navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
-
-            /* 2025.04.12 */
-            if (navigator.geolocation) {
-                success();
-                fail();
-            } else {
-                // 豐原車站/@24.2541968,120.7212929
-                alert("無法定位! 預設座標至豐原火車站");
-
-                $.ajax({
-                    type: "GET",
-                    url: dataAPI,
-                    dataType: "json",
-                    success: function (data) {
-
-                        Mapdata = initMap(fylat, fylng);
-
-                        data.latitude = fylat;
-                        data.longitude = fylng;
-                        data.map = Mapdata.map;
-                        data.markers = Mapdata.markers;
-                        //
-                        show(data);
-                    },
-                    error: function () {
-                        alert("opendata error");
-                    }
-                });
-            }
-        });
+        printMap()
 
         setInterval(updateContent, 30000); // Update every 30 seconds
 
+        function printMap() {
+            $(function () {
+
+                // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
+                navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
+
+                /* 2025.04.12 */
+                if (navigator.geolocation) {
+                    success();
+                    fail();
+                } else {
+                    // 豐原車站/@24.2541968,120.7212929
+                    alert("無法定位! 預設座標至豐原火車站");
+
+                    $.ajax({
+                        type: "GET",
+                        url: dataAPI,
+                        dataType: "json",
+                        success: function (data) {
+
+                            Mapdata = initMap(fylat, fylng);
+
+                            data.latitude = fylat;
+                            data.longitude = fylng;
+                            data.map = Mapdata.map;
+                            data.markers = Mapdata.markers;
+                            //
+                            show(data);
+                        },
+                        error: function () {
+                            alert("opendata error");
+                        }
+                    });
+                }
+            });
+        }
+
         function updateContent() {
             const contentDiv = document.getElementById('map');
-            contentDiv.textContent = `Updated Content: ${new Date().toLocaleTimeString()}`;
+            // contentDiv.textContent = `Updated Content: ${new Date().toLocaleTimeString()}`;
+            contentDiv.textContent = `Updated Content: ${printMap()}`;
         }
 
         function success(position) {
