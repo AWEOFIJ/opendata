@@ -148,7 +148,6 @@
                     curlat = 24.2541968;
                     curlng = 120.7212929;
 
-                    // var map = L.map('map').setView([curlat, curlng], 16);
                     var Mapdata = initMap(curlat, curlng);
 
                     $.ajax({
@@ -174,7 +173,6 @@
                 curlat = 24.2541968;
                 curlng = 120.7212929;
 
-                // var map = L.map('map').setView([curlat, curlng], 16);
                 var Mapdata = initMap(curlat, curlng);
 
                 $.ajax({
@@ -371,7 +369,7 @@
             // 豐原車站/@24.2541968,120.7212929
 
             if (typeof map === "undefined") { var map = L.map('map').setView([24.2541968, 120.7212929], 16); }
-            else { var map = L.map('map').setView([curlat, curlng], 16); }
+            else { var map = L.map('map').setView([curlat, curlng], 15); }
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
