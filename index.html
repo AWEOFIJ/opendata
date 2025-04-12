@@ -102,8 +102,7 @@
         fylng = 120.7226995;
 
         /* 2025.04.12 */
-
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("load", function(event) {
             $(function () {
                 // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
                 navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
