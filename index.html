@@ -169,8 +169,8 @@
             curlat = position.coords.latitude;
             curlng = position.coords.longitude;
 
-            console.log("su_經度: " + curlat);
-            console.log("su_緯度: " + curlng);
+            // console.log("su_經度: " + curlat);
+            // console.log("su_緯度: " + curlng);
 
             $.ajax({
                 type: "GET",
@@ -275,8 +275,8 @@
             // curlat = data.latitude;
             // curlng = data.longitude;
 
-            console.log("___經度: " + data.latitude);
-            console.log("___緯度: " + data.longitude);
+            // console.log("___經度: " + data.latitude);
+            // console.log("___緯度: " + data.longitude);
 
             markers.addLayer(L.marker([data.latitude, data.longitude], { icon: goldIcon }).bindPopup("定位完成!"));
             // markers.addLayer(L.marker([24.173703, 120.613587]));
@@ -371,8 +371,8 @@
 
             var map = L.map('map').setView([lat, lng], 17);
 
-            console.log("經度: " + lat);
-            console.log("緯度: " + lng);
+            // console.log("經度: " + lat);
+            // console.log("緯度: " + lng);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
