@@ -61,8 +61,8 @@
     </style>
 
     <!--   header   -->
-    <link rel="icon" href="img/badge-check.png" type="image/x-icon">
-    <title>mask map - deprecated</title>
+    <link rel="icon" href="img/trash.png" type="image/x-icon">
+    <title>trash truck daynamic location</title>
 
 </head>
 
@@ -90,8 +90,8 @@
 
     <script>
 
-        const dataAPI = "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json";
-        const newAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/39ff2c7e-6d49-4638-bb66-9102fad4a0fb"
+        // 垃圾車動態API
+        const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
         var curlat, curlng, fylat, fylng, Mapdata;
 
         // 豐原車站/@24.2541968, 120.7212929
@@ -142,8 +142,8 @@
             curlat = position.coords.latitude;
             curlng = position.coords.longitude;
 
-            // console.log("su_經度: " + curlat);
-            // console.log("su_緯度: " + curlng);
+            console.log("su_經度: " + curlat);
+            console.log("su_緯度: " + curlng);
 
             $.ajax({
                 type: "GET",
@@ -253,17 +253,22 @@
 
             markers.addLayer(L.marker([data.latitude, data.longitude], { icon: goldIcon }).bindPopup("定位完成!"));
 
-            for (var i = 0; i < data.features.length; i++) {
-                if (data.features[i].properties.mask_adult < 20) {
-                    markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: redIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-                } else if (data.features[i].properties.mask_adult >= 30 && data.features[i].properties.mask_adult < 72) {
-                    markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: yellowIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-                } else if (data.features[i].properties.mask_adult >= 72 && data.features[i].properties.mask_adult < 150) {
-                    markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: greenIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-                } else if (data.features[i].properties.mask_adult > 150) {
-                    markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
-                }
+            // for (var i = 0; i < data.features.length; i++) {
+            //     if (data.features[i].properties.mask_adult < 20) {
+            //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: redIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
+            //     } else if (data.features[i].properties.mask_adult >= 30 && data.features[i].properties.mask_adult < 72) {
+            //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: yellowIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
+            //     } else if (data.features[i].properties.mask_adult >= 72 && data.features[i].properties.mask_adult < 150) {
+            //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: greenIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
+            //     } else if (data.features[i].properties.mask_adult > 150) {
+            //         markers.addLayer(L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.features[i].properties.name + '</h5></div><div class="card-body"><p>電話：' + data.features[i].properties.phone + '</p><p>地址：' + data.features[i].properties.address + '</p><p>成人口罩：' + data.features[i].properties.mask_adult + '</p><p>兒童口罩：' + data.features[i].properties.mask_child + '</p><p>營業時間：' + data.features[i].properties.note + '</p><p>更新時間：' + data.features[i].properties.updated + '</p></div></div>'));
+            //     }
+            // }
+
+            for (var i = 0; i < data.length; i++){
+                markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>經度：' + data[i].X + '</p><p>緯度：' + data[i].Y + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
             }
+
             map.addLayer(markers);
         }
 
