@@ -145,8 +145,8 @@
                 function fail(error) {
                     // 豐原車站/@24.2541968,120.7212929
                     alert("無法定位! 預設座標至豐原火車站");
-                    curlat = 24.2541968;
-                    curlng = 120.7212929;
+                    curlat = null;
+                    curlng = null;
 
                     var Mapdata = initMap(curlat, curlng);
 
@@ -170,8 +170,8 @@
             } else {
                 // 豐原車站/@24.2541968,120.7212929
                 alert("無法定位! 預設座標至豐原火車站");
-                curlat = 24.2541968;
-                curlng = 120.7212929;
+                curlat = null;
+                curlng = null;
 
                 var Mapdata = initMap(curlat, curlng);
 
@@ -192,6 +192,9 @@
                     }
                 });
             }
+
+            var curlat = null;
+            var curlng = null;
 
             $.ajax({
                 type: "GET",
@@ -368,7 +371,7 @@
 
             // 豐原車站/@24.2541968,120.7212929
 
-            if (typeof map === "undefined") { var map = L.map('map').setView([24.2541968, 120.7212929], 14); }
+            if (typeof map === null) { var map = L.map('map').setView([24.2541968, 120.7212929], 14); }
             else { var map = L.map('map').setView([curlat, curlng], 16); }
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
