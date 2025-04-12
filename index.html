@@ -136,6 +136,13 @@
             }
         });
 
+        function updateContent() {
+            const contentDiv = document.getElementById('content');
+            contentDiv.textContent = `Updated Content: ${new Date().toLocaleTimeString()}`;
+        }
+
+        setInterval(updateContent, 30000); // Update every 30 seconds
+
         function success(position) {
             // Location found, show map with these coordinates
             // console.log("經度: " + pos.coords.latitude);
@@ -151,7 +158,7 @@
                 url: dataAPI,
                 dataType: "json",
                 success: function (data) {
-                    
+
                     Mapdata = initMap(curlat, curlng);
 
                     data.latitude = curlat;
@@ -266,7 +273,7 @@
             //     }
             // }
 
-            for (var i = 0; i < data.length; i++){
+            for (var i = 0; i < data.length; i++) {
                 markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
             }
 
@@ -277,9 +284,9 @@
 
             // console.log("經度: " + lat);
             // console.log("緯度: " + lng);
-            
+
             var map = L.map('map').setView([lat, lng], 17);
-            
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
