@@ -101,18 +101,16 @@
         fylat = 24.2543403;
         fylng = 120.7226995;
 
-        printMap();
-        setInterval(updateContent, 60000); // Update every 60 seconds
+        /* 2025.04.12 */
 
-        function printMap() {
+        document.addEventListener('DOMContentLoaded', () => {
             $(function () {
-
                 // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
                 navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
 
-                /* 2025.04.12 */
                 if (navigator.geolocation) {
-                    success();
+                    const coordinatesMap = success();
+                    window.coordinatesMap = coordinatesMap;
                     fail();
                 } else {
                     // 豐原車站/@24.2541968,120.7212929
@@ -122,60 +120,48 @@
                         type: "GET",
                         url: dataAPI,
                         dataType: "json",
-                        success: function (data) {
-
-                            Mapdata = initMap(fylat, fylng);
-
-                            data.latitude = fylat;
-                            data.longitude = fylng;
-                            data.map = Mapdata.map;
-                            data.markers = Mapdata.markers;
-                            //
-                            show(data);
-                        },
+                        success: locateFailed,
                         error: function () {
                             alert("opendata error");
                         }
                     });
                 }
-            });
-        }
 
-        function updateContent() {
-            var contentDiv = document.getElementById('map');
-            // contentDiv.textContent = `Updated Content: ${new Date().toLocaleTimeString()}`;
-            contentDiv.document = printMap();
-        }
+                reFreshPage(window.coordinatesMap);
+            });
+        });
 
         function success(position) {
             // Location found, show map with these coordinates
             // console.log("經度: " + pos.coords.latitude);
             // console.log("緯度: " + pos.coords.longitude);
+
             curlat = position.coords.latitude;
             curlng = position.coords.longitude;
+            Mapdata = initMap(curlat, curlng);
 
-            // console.log("su_經度: " + curlat);
-            // console.log("su_緯度: " + curlng);
+            // console.log("經度: " + curlat);
+            // console.log("緯度: " + curlng);
 
             $.ajax({
                 type: "GET",
                 url: dataAPI,
                 dataType: "json",
-                success: function (data) {
-
-                    Mapdata = initMap(curlat, curlng);
-
+                success: function () {
+                    let data = {};
                     data.latitude = curlat;
                     data.longitude = curlng;
                     data.map = Mapdata.map;
                     data.markers = Mapdata.markers;
-                    //
+
                     show(data);
                 },
                 error: function () {
                     alert("opendata error");
                 }
             });
+
+            return { curlat, curlng, Mapdata };
         }
 
         function fail(error) {
@@ -186,21 +172,63 @@
                 type: "GET",
                 url: dataAPI,
                 dataType: "json",
-                success: function (data) {
-
-                    Mapdata = initMap(fylat, fylng);
-
-                    data.latitude = fylat;
-                    data.longitude = fylng;
-                    data.map = Mapdata.map;
-                    data.markers = Mapdata.markers;
-                    //
-                    show(data);
-                },
+                success: locateFailed,
                 error: function () {
                     alert("opendata error");
                 }
             });
+        }
+
+        function locateFailed() {
+            let data = {};
+
+            Mapdata = initMap(fylat, fylng);
+
+            data.latitude = fylat;
+            data.longitude = fylng;
+            data.map = Mapdata.map;
+            data.markers = Mapdata.markers;
+            //
+            show(data);
+        }
+
+        function reFreshPage(coordinatesMap) {
+            var contentDiv = document.getElementById('map');
+
+            async function fetchData() {
+                try {
+                    const response = await fetch('https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc');
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    const map = coordinatesMap.Mapdata.map;
+                    const markers = coordinatesMap.Mapdata.markers;
+                    const curlat = coordinatesMap.curlat;
+                    const curlng = coordinatesMap.curlng;
+
+                    for (var i = 0; i < data.length; i++) {
+                        markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
+                    }
+
+                    map.addLayer(markers);
+
+                    // console.log(contentDiv);
+                    // contentDiv.textContent = JSON.stringify(data);
+                    // contentDiv.textContent = document.getElementById('map');
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    contentDiv.textContent = 'Failed to load data';
+                }
+            }
+
+            // Fetch data initially
+            fetchData();
+
+            // Set interval to fetch data every 5 seconds
+            setInterval(fetchData, 60000);
         }
 
         function show(data) {
