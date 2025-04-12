@@ -90,8 +90,9 @@
 
     <script>
 
-        // 垃圾車動態API
+        // 垃圾車動態API    // 垃圾車定點回收API
         const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
+        const locDataApi = "https://datacenter.taichung.gov.tw/swagger/OpenData/c3f0f94c-1dda-475f-b7cf-824d2e074cad";
         var curlat, curlng, fylat, fylng, Mapdata;
 
         // 豐原車站/@24.2541968, 120.7212929
@@ -266,7 +267,7 @@
             // }
 
             for (var i = 0; i < data.length; i++){
-                markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>經度：' + data[i].X + '</p><p>緯度：' + data[i].Y + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
+                markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
             }
 
             map.addLayer(markers);
