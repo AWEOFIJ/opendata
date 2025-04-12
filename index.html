@@ -21,7 +21,7 @@
 
     <!-- Fontawesome -->
     <link rel="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/solid.min.css" />
-    
+
     <style>
         .marker-cluster-small {
             font-size: 20px;
@@ -143,9 +143,11 @@
                 }
 
                 function fail(error) {
+                    // 豐原車站/@24.2541968,120.7212929
                     alert("無法定位! 預設座標至豐原火車站");
-                    curlat = 24.2541968;
-                    curlng = 120.7212929;
+
+                    // var map = L.map('map').setView([curlat, curlng], 16);
+                    var Mapdata = initMap(curlat, curlng);
 
                     $.ajax({
                         type: "GET",
@@ -167,21 +169,22 @@
             } else {
                 // 豐原車站/@24.2541968,120.7212929
                 alert("無法定位! 預設座標至豐原火車站");
-                curlat = 24.2541968;
-                curlng = 120.7212929;
+
+                // var map = L.map('map').setView([curlat, curlng], 16);
+                var Mapdata = initMap(curlat, curlng);
 
                 $.ajax({
                     type: "GET",
                     url: dataAPI,
                     dataType: "json",
                     success: function (data) {
-                            data.latitude = curlat;
-                            data.longitude = curlng;
-                            data.map = Mapdata.map;
-                            data.markers = Mapdata.markers;
-                            //
-                            show(data);
-                        },
+                        data.latitude = curlat;
+                        data.longitude = curlng;
+                        data.map = Mapdata.map;
+                        data.markers = Mapdata.markers;
+                        //
+                        show(data);
+                    },
                     error: function () {
                         alert("opendata error");
                     }
@@ -193,13 +196,13 @@
                 url: dataAPI,
                 dataType: "json",
                 success: function (data) {
-                            data.latitude = curlat;
-                            data.longitude = curlng;
-                            data.map = Mapdata.map;
-                            data.markers = Mapdata.markers;
-                            //
-                            show(data);
-                        },
+                    data.latitude = curlat;
+                    data.longitude = curlng;
+                    data.map = Mapdata.map;
+                    data.markers = Mapdata.markers;
+                    //
+                    show(data);
+                },
                 error: function () {
                     alert("api error");
                 }
@@ -360,8 +363,11 @@
         // }
 
         function initMap(curlat, curlng) {
-            var map = L.map('map').setView([curlat, curlng], 16);
-            // var map = L.map('map').setView([24.172518, 120.611602], 13);
+
+            // 豐原車站/@24.2541968,120.7212929
+
+            if (typeof map === "undefined") { var map = L.map('map').setView([24.2541968, 120.7212929], 16); }
+            else { var map = L.map('map').setView([curlat, curlng], 16); }
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
