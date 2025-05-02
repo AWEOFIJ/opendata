@@ -90,13 +90,9 @@
 
     <script>
 
-        // 垃圾車動態API    // 垃圾車定點回收API
+        // 垃圾車動態API    
         const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
-        const locDataApi = "https://datacenter.taichung.gov.tw/swagger/OpenData/c3f0f94c-1dda-475f-b7cf-824d2e074cad";
         var curlat, curlng, fylat, fylng, Mapdata, geo = 0;
-
-        // 豐原車站/@24.2541968, 120.7212929
-        // 豐原車站/@24.2543403,120.7226995
 
         fylat = 24.2543403;
         fylng = 120.7226995;
@@ -109,27 +105,15 @@
             if (navigator.geolocation) {
                 success();
             } else {
-                // 豐原車站/@24.2541968,120.7212929
-                // alert("無法定位! 預設座標至豐原火車站");
                 fail();
             }
         });
 
-        /* 2025.04.12 */
-        // document.addEventListener("load", function () {
-        // });
-
         function success(position) {
-            // Location found, show map with these coordinates
-            // console.log("經度: " + pos.coords.latitude);
-            // console.log("緯度: " + pos.coords.longitude);
 
             curlat = position.coords.latitude;
             curlng = position.coords.longitude;
             Mapdata = initMap(curlat, curlng);
-
-            // console.log("經度: " + curlat);
-            // console.log("緯度: " + curlng);
 
             $.ajax({
                 type: "GET",
@@ -158,8 +142,6 @@
         }
 
         function fail(error) {
-            // 豐原車站/@24.2541968,120.7212929
-            // alert("無法定位! 預設座標至豐原火車站");
 
             $.ajax({
                 type: "GET",
@@ -184,7 +166,7 @@
             data.longitude = fylng;
             data.map = Mapdata.map;
             data.markers = Mapdata.markers;
-            //
+            
             show(data);
 
             return { curlat: fylat, curlng: fylng, Mapdata: Mapdata };
@@ -195,7 +177,7 @@
 
             async function fetchData() {
                 try {
-                    const response = await fetch('https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc');
+                    const response = await fetch(dataAPI);
 
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -206,9 +188,6 @@
                     const markers = coordinatesMap.Mapdata.markers;
                     const curlat = coordinatesMap.curlat;
                     const curlng = coordinatesMap.curlng;
-
-                    // console.log(data);
-                    // console.log(coordinatesMap);
 
                     var blueIcon = new L.Icon({
                         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -230,23 +209,12 @@
                 }
             }
 
-            // Fetch data initially
             fetchData();
 
-            // Set interval to fetch data every 5 seconds
             setInterval(fetchData, 60000);
         }
 
         function show(data) {
-
-            // var redIcon = new L.Icon({
-            //     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-            //     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            //     iconSize: [25, 41],
-            //     iconAnchor: [12, 41],
-            //     popupAnchor: [1, -34],
-            //     shadowSize: [41, 41]
-            // });
 
             var goldIcon = new L.Icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
@@ -257,24 +225,6 @@
                 shadowSize: [41, 41]
             });
 
-            // var yellowIcon = new L.Icon({
-            //     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-            //     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            //     iconSize: [25, 41],
-            //     iconAnchor: [12, 41],
-            //     popupAnchor: [1, -34],
-            //     shadowSize: [41, 41]
-            // });
-
-            // var greenIcon = new L.Icon({
-            //     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-            //     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            //     iconSize: [25, 41],
-            //     iconAnchor: [12, 41],
-            //     popupAnchor: [1, -34],
-            //     shadowSize: [41, 41]
-            // });
-
             var blueIcon = new L.Icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -284,18 +234,8 @@
                 shadowSize: [41, 41]
             });
 
-            // console.log(data);
-            // console.log(data.features[0].geometry.coordinates[1]);
-            // console.log(data.features[0].geometry.coordinates[0]);
-
             var map = data.map;
             var markers = data.markers;
-
-            // curlat = data.latitude;
-            // curlng = data.longitude;
-
-            // console.log("___經度: " + data.latitude);
-            // console.log("___緯度: " + data.longitude);
 
             markers.addLayer(L.marker([data.latitude, data.longitude], { icon: goldIcon }).bindPopup("定位完成!"));
 
@@ -307,9 +247,6 @@
         }
 
         function initMap(lat, lng) {
-
-            // console.log("經度: " + lat);
-            // console.log("緯度: " + lng);
 
             var map = L.map('map').setView([lat, lng], 17);
 
