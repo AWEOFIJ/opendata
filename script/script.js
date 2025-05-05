@@ -1,5 +1,3 @@
-
-
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
 var curlat, curlng, fylat, fylng, Mapdata;
 let data = {};
@@ -33,8 +31,6 @@ function success(position) {
             data.longitude = curlng;
             data.map = Mapdata.map;
             data.markers = Mapdata.markers;
-
-            console.log(data);
 
             show(data);
 
@@ -94,15 +90,13 @@ function reFreshPage(coordinatesMap) {
             const curlat = coordinatesMap.curlat;
             const curlng = coordinatesMap.curlng;
 
-            document.getElementById('map').innerHTML = map;
+            document.getElementById('map') = map;
 
             $.ajax({
                 type: "GET",
                 url: dataAPI,
                 dataType: "json",
                 success: function () {
-
-                    console.log(data);
 
                     var blueIcon = new L.Icon({
                         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -123,7 +117,7 @@ function reFreshPage(coordinatesMap) {
                     alert("opendata error");
                 }
             });
-        }, 60000);
+        }, 15000);
 
     } catch (error) {
         console.error('Fetch error:', error);
@@ -164,12 +158,6 @@ function show(data) {
 }
 
 function initMap(lat, lng) {
-
-    // var map = L.map('map').setView([lat, lng], 17);
-
-    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    // }).addTo(map);
 
     var OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
