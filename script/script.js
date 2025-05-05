@@ -84,8 +84,6 @@ function show(data) {
         shadowSize: [41, 41]
     });
 
-    console.log(data);
-
     map = data.map;
     var markers = data.markers;
 
