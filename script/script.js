@@ -58,7 +58,7 @@ function fail() {
         url: dataAPI,
         dataType: "json",
         success: function (data) {
-            const locfailed = locateFailed(fylat, fylng, data, Mapdata);
+            locateFailed(fylat, fylng, data, Mapdata);
         },
         error: function () {
             alert("opendata error");
