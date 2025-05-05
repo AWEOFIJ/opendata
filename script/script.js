@@ -4,17 +4,17 @@ var curlat, curlng, fylat, fylng, Mapdata, geo = 0;
 fylat = 24.2543403;
 fylng = 120.7226995;
 
-$(function () {
-    navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
+$(async function () {
+    const Geo = navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
 
-    if (navigator.geolocation) {
-        success();
+    if (Geo) {
+        await success();
     } else {
-        fail();
+        await fail();
     }
 });
 
-function success(position) {
+async function success(position) {
 
     curlat = position.coords.latitude;
     curlng = position.coords.longitude;
@@ -24,7 +24,7 @@ function success(position) {
         type: "GET",
         url: dataAPI,
         dataType: "json",
-        success: function () {
+        success: async function () {
             let data = {};
             data.latitude = curlat;
             data.longitude = curlng;
@@ -38,7 +38,8 @@ function success(position) {
                 curlng: curlng,
                 Mapdata: Mapdata
             };
-            reFreshPage(coordinatesMap);
+
+            await reFreshPage(coordinatesMap);
         },
         error: function () {
             alert("opendata error");
@@ -46,7 +47,7 @@ function success(position) {
     });
 }
 
-function fail(error) {
+async function fail(error) {
 
     $.ajax({
         type: "GET",
@@ -78,17 +79,20 @@ function locateFailed() {
 }
 
 async function reFreshPage(coordinatesMap) {
-    var contentDiv = document.getElementById('map');
 
-    async function fetchData() {
-        try {
-            const response = await fetch(dataAPI);
+    try {
+
+        setInterval(() => {
+
+            document.getElementById('map').innerHTML = '';
+
+            const response = fetch(dataAPI);
 
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
-            const data = await response.json();
+            const data = response.json();
             const map = coordinatesMap.Mapdata.map;
             const markers = coordinatesMap.Mapdata.markers;
             const curlat = coordinatesMap.curlat;
@@ -108,15 +112,13 @@ async function reFreshPage(coordinatesMap) {
             }
 
             map.addLayer(markers);
-        } catch (error) {
-            console.error('Fetch error:', error);
-            contentDiv.textContent = 'Failed to load data';
-        }
+            
+        }, 60000);
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+        contentDiv.textContent = 'Failed to load data';
     }
-
-    fetchData();
-
-    setInterval(fetchData, 60000);
 }
 
 function show(data) {
