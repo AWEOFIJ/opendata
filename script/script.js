@@ -124,13 +124,13 @@ function reFreshPage(data) {
             const curlat = data.curlat;
             const curlng = data.curlng;
 
-            document.getElementById('map').innerHTML = '';
-
             $.ajax({
                 type: "GET",
                 url: dataAPI,
                 dataType: "json",
                 success: function (data) {
+
+                    markers.clearLayers();
 
                     var blueIcon = new L.Icon({
                         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -146,8 +146,6 @@ function reFreshPage(data) {
                     }
 
                     map.addLayer(markers);
-
-                    document.getElementById('map').innerHTML = '<div id="map">' + map + '</div>';
                 },
                 error: function () {
                     alert("opendata error");
