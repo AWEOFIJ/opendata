@@ -117,7 +117,7 @@ function reFreshPage(coordinatesMap) {
                     alert("opendata error");
                 }
             });
-        }, 15000);
+        }, 60000);
 
     } catch (error) {
         console.error('Fetch error:', error);
