@@ -111,7 +111,7 @@ function show(data) {
 
     setTimeout(() => {
         reFreshPage(data);
-    }, 60000);
+    }, 15000);
 
 }
 
@@ -126,7 +126,7 @@ function reFreshPage(data) {
             const curlat = data.curlat;
             const curlng = data.curlng;
 
-            document.getElementById('map').value = '';
+            document.getElementById('map').innerHTML = '';
 
             $.ajax({
                 type: "GET",
