@@ -1,5 +1,5 @@
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
-const testAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/6bfd1b96-2435-4ce0-a8aa-418eda9e8f02";
+// const testAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/6bfd1b96-2435-4ce0-a8aa-418eda9e8f02";
 var curlat, curlng, fylat, fylng, Mapdata, map;
 
 fylat = 24.2543403;
