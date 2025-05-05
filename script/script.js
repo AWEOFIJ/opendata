@@ -126,7 +126,7 @@ function reFreshPage(data) {
             const curlat = data.curlat;
             const curlng = data.curlng;
 
-            document.getElementById('map').value = map;
+            document.getElementById('map').value = '';
 
             $.ajax({
                 type: "GET",
