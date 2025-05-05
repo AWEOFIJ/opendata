@@ -75,7 +75,7 @@ function locateFailed(fylat, fylng, data, Mapdata) {
 
     show(data);
 
-    return { curlat: fylat, curlng: fylng, Mapdata: Mapdata };
+    // return { curlat: fylat, curlng: fylng, Mapdata: Mapdata };
 }
 
 function show(data) {
