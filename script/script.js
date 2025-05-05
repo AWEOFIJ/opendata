@@ -1,13 +1,28 @@
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
+const testAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/6bfd1b96-2435-4ce0-a8aa-418eda9e8f02";
 var curlat, curlng, fylat, fylng, Mapdata, map;
-let data = {};
 
 fylat = 24.2543403;
 fylng = 120.7226995;
 
 $(function () {
     navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 500000, enableHighAccuracy: true, timeout: 6000 });
+    // goTestAPI();
 });
+
+// function goTestAPI() { 
+//     $.ajax({
+//         type: "GET",
+//         url: testAPI,
+//         dataType: "json",
+//         success: function (data) {
+//             console.log(data);
+//         },
+//         error: function () {
+//             alert("opendata error");
+//         }
+//     });
+// }
 
 function success(position) {
 
@@ -19,7 +34,7 @@ function success(position) {
         type: "GET",
         url: dataAPI,
         dataType: "json",
-        success: function () {
+        success: function (data) {
 
             data.latitude = curlat;
             data.longitude = curlng;
@@ -42,8 +57,8 @@ function fail() {
         type: "GET",
         url: dataAPI,
         dataType: "json",
-        success: function () {
-            const locfailed = locateFailed(fylat, fylng);
+        success: function (data) {
+            const locfailed = locateFailed(fylat, fylng, data, Mapdata);
         },
         error: function () {
             alert("opendata error");
@@ -51,8 +66,7 @@ function fail() {
     });
 }
 
-function locateFailed(fylat, fylng) {
-    let data = {};
+function locateFailed(fylat, fylng, data) {
 
     data.latitude = fylat;
     data.longitude = fylng;
@@ -118,7 +132,7 @@ function reFreshPage(data) {
                 type: "GET",
                 url: dataAPI,
                 dataType: "json",
-                success: function () {
+                success: function (data) {
 
                     var blueIcon = new L.Icon({
                         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -139,7 +153,7 @@ function reFreshPage(data) {
                     alert("opendata error");
                 }
             });
-        }, 15000);
+        }, 60000);
 
     } catch (error) {
         console.error('Fetch error:', error);
