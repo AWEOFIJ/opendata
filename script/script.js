@@ -66,7 +66,7 @@ function fail() {
     });
 }
 
-function locateFailed(fylat, fylng, data) {
+function locateFailed(fylat, fylng, data, Mapdata) {
 
     data.latitude = fylat;
     data.longitude = fylng;
