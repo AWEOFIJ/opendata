@@ -1,3 +1,5 @@
+
+
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
 var curlat, curlng, fylat, fylng, Mapdata, geo = 0;
 
@@ -30,6 +32,8 @@ async function success(position) {
             data.longitude = curlng;
             data.map = Mapdata.map;
             data.markers = Mapdata.markers;
+
+            console.log(data);
 
             show(data);
 
@@ -84,7 +88,12 @@ async function reFreshPage(coordinatesMap) {
 
         setInterval(() => {
 
-            document.getElementById('map').innerHTML = '';
+            const map = coordinatesMap.Mapdata.map;
+            const markers = coordinatesMap.Mapdata.markers;
+            const curlat = coordinatesMap.curlat;
+            const curlng = coordinatesMap.curlng;
+
+            document.getElementById('map').innerHTML = map;
 
             const response = fetch(dataAPI);
 
@@ -93,10 +102,6 @@ async function reFreshPage(coordinatesMap) {
             }
 
             const data = response.json();
-            const map = coordinatesMap.Mapdata.map;
-            const markers = coordinatesMap.Mapdata.markers;
-            const curlat = coordinatesMap.curlat;
-            const curlng = coordinatesMap.curlng;
 
             var blueIcon = new L.Icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -112,7 +117,7 @@ async function reFreshPage(coordinatesMap) {
             }
 
             map.addLayer(markers);
-            
+
         }, 60000);
 
     } catch (error) {
@@ -155,16 +160,26 @@ function show(data) {
 
 function initMap(lat, lng) {
 
-    var map = L.map('map').setView([lat, lng], 17);
+    // var map = L.map('map').setView([lat, lng], 17);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // }).addTo(map);
+
+    var OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    });
+
+    var map = L.map('map', {
+        center: [lat, lng],
+        zoom: 17,
+        layers: [OpenStreetMap]
+    });
 
     var markers = L.markerClusterGroup().addTo(map);
     map.addLayer(markers);
 
-    var initmap = { map: map, markers: markers };
+    var initmap = { openStreetMap: OpenStreetMap, map: map, markers: markers };
 
     return initmap;
 }
