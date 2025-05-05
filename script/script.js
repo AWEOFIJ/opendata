@@ -1,7 +1,8 @@
 
 
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
-var curlat, curlng, fylat, fylng, Mapdata, geo = 0;
+var curlat, curlng, fylat, fylng, Mapdata;
+let data = {};
 
 fylat = 24.2543403;
 fylng = 120.7226995;
@@ -16,7 +17,7 @@ $(async function () {
     }
 });
 
-async function success(position) {
+function success(position) {
 
     curlat = position.coords.latitude;
     curlng = position.coords.longitude;
@@ -26,8 +27,8 @@ async function success(position) {
         type: "GET",
         url: dataAPI,
         dataType: "json",
-        success: async function () {
-            let data = {};
+        success: function () {
+
             data.latitude = curlat;
             data.longitude = curlng;
             data.map = Mapdata.map;
@@ -43,7 +44,7 @@ async function success(position) {
                 Mapdata: Mapdata
             };
 
-            await reFreshPage(coordinatesMap);
+            reFreshPage(coordinatesMap);
         },
         error: function () {
             alert("opendata error");
@@ -51,14 +52,16 @@ async function success(position) {
     });
 }
 
-async function fail(error) {
+function fail(error) {
+
+    Mapdata = initMap(fylat, fylng);
 
     $.ajax({
         type: "GET",
         url: dataAPI,
         dataType: "json",
         success: function () {
-            const locfailed = locateFailed();
+            const locfailed = locateFailed(fylat, fylng);
             reFreshPage(locfailed);
         },
         error: function () {
@@ -67,10 +70,8 @@ async function fail(error) {
     });
 }
 
-function locateFailed() {
+function locateFailed(fylat, fylng) {
     let data = {};
-
-    Mapdata = initMap(fylat, fylng);
 
     data.latitude = fylat;
     data.longitude = fylng;
@@ -82,7 +83,7 @@ function locateFailed() {
     return { curlat: fylat, curlng: fylng, Mapdata: Mapdata };
 }
 
-async function reFreshPage(coordinatesMap) {
+function reFreshPage(coordinatesMap) {
 
     try {
 
@@ -95,29 +96,33 @@ async function reFreshPage(coordinatesMap) {
 
             document.getElementById('map').innerHTML = map;
 
-            const response = fetch(dataAPI);
+            $.ajax({
+                type: "GET",
+                url: dataAPI,
+                dataType: "json",
+                success: function () {
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+                    console.log(data);
 
-            const data = response.json();
+                    var blueIcon = new L.Icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
 
-            var blueIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
+                    for (var i = 0; i < data.length; i++) {
+                        markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
+                    }
+
+                    map.addLayer(markers);
+                },
+                error: function () {
+                    alert("opendata error");
+                }
             });
-
-            for (var i = 0; i < data.length; i++) {
-                markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
-            }
-
-            map.addLayer(markers);
-
         }, 60000);
 
     } catch (error) {
