@@ -74,8 +74,6 @@ function locateFailed(fylat, fylng, data, Mapdata) {
     data.markers = Mapdata.markers;
 
     show(data);
-
-    // return { curlat: fylat, curlng: fylng, Mapdata: Mapdata };
 }
 
 function show(data) {
@@ -148,6 +146,8 @@ function reFreshPage(data) {
                     }
 
                     map.addLayer(markers);
+
+                    document.getElementById('map').innerHTML = '<div id="map">' + map + '</div>';
                 },
                 error: function () {
                     alert("opendata error");
