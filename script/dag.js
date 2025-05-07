@@ -1,8 +1,10 @@
+let N = 10; // Number of nodes
+
 class Dag {
     constructor() {
-        this.adj = Array.from({ length: 10 }, () => Array(10).fill(false));
-        this.visit = Array(10).fill(false);
-        this.order = Array(10).fill(null);
+        this.adj = Array.from({ length: N }, () => Array(10).fill(false));
+        this.visit = Array(N).fill(false);
+        this.order = Array(N).fill(null);
         this.t = 0;
         this.cycle = false;
     }
@@ -13,7 +15,7 @@ class Dag {
 
         this.visit[i] = 1;
 
-        for (let j = 0; j < 10; ++j) {
+        for (let j = 0; j < N; ++j) {
             if (this.adj[i][j]) this.DFS(j);
         }
 
@@ -24,7 +26,7 @@ class Dag {
     topological_ordering() {
         this.visit.fill(0);  // Reset visit array
         
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < N; i++) {
             if (!this.visit[i]) this.DFS(i);
         }
 
@@ -32,7 +34,7 @@ class Dag {
             console.log("圖上有環");
         } else {
             console.log("拓撲排序:");
-            for (let i = 10 - 1; i >= 0; i--) {
+            for (let i = N - 1; i >= 0; i--) {
                 console.log(this.order[i]);
             }
         }
