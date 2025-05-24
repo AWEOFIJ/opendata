@@ -31,9 +31,9 @@ class Dag {
         }
 
         if (this.cycle) {
-            console.log("圖上有環");
+            /* console.log("Ｏ"); */
         } else {
-            console.log("拓撲排序:");
+            /* console.log("拓撲排序:"); */
             for (let i = N - 1; i >= 0; i--) {
                 console.log(this.order[i]);
             }
