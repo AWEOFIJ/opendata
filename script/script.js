@@ -149,7 +149,7 @@ function reFreshPage(data) {
                     alert("opendata error");
                 }
             });
-        }, 60000);
+        }, 60000); // 每60秒刷新一次
 
     } catch (error) {
         console.error('Fetch error:', error);
