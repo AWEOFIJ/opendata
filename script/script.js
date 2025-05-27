@@ -5,10 +5,30 @@ fylat = 24.2543403;
 fylng = 120.7226995;
 
 $(function () {
-    navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 6e4, enableHighAccuracy: true, timeout: 6e3 });
+
+    // Get the current timestamp
+    const timestamp = Date.now();
+
+    // Get the current URL
+    const currentUrl = window.location.href;
+
+    // Append the timestamp to the current URL
+    const appendUrl = window.location.href.includes('?')
+        ? `${currentUrl}&timestamp=${timestamp}`
+        : `${currentUrl}?timestamp=${timestamp}`;
+    
+    console.log("Current URL with timestamp:", appendUrl);
+
+    // Update the window location
+
+    // navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
+    alert("請允許瀏覽器定位功能，否則無法使用本服務。");
+    // 監聽定位變化
+    alert("即時訂位時間5分鐘!!");
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 300000, enableHighAccuracy: true, timeout: 6000 });
 });
 
-// function goTestAPI() { 
+// function goTestAPI() {
 //     $.ajax({
 //         type: "GET",
 //         url: testAPI,
@@ -107,54 +127,47 @@ function show(data) {
 
     setTimeout(() => {
         reFreshPage(data);
-    }, 15000);
+    }, 30000); // 預設30秒後刷新一次而且只有一次
 
 }
 
 function reFreshPage(data) {
 
-    try {
+    setInterval(() => {
 
-        setInterval(() => {
+        const map = data.map;
+        const markers = data.markers;
+        const curlat = data.curlat;
+        const curlng = data.curlng;
 
-            const map = data.map;
-            const markers = data.markers;
-            const curlat = data.curlat;
-            const curlng = data.curlng;
+        $.ajax({
+            type: "GET",
+            url: dataAPI,
+            dataType: "json",
+            success: function (data) {
 
-            $.ajax({
-                type: "GET",
-                url: dataAPI,
-                dataType: "json",
-                success: function (data) {
+                markers.clearLayers();
 
-                    markers.clearLayers();
+                var blueIcon = new L.Icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                });
 
-                    var blueIcon = new L.Icon({
-                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]
-                    });
-
-                    for (var i = 0; i < data.length; i++) {
-                        markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
-                    }
-
-                    map.addLayer(markers);
-                },
-                error: function () {
-                    alert("opendata error");
+                for (var i = 0; i < data.length; i++) {
+                    markers.addLayer(L.marker([data[i].Y, data[i].X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
                 }
-            });
-        }, 6e4); // 每60秒刷新一次
 
-    } catch (error) {
-        console.error('Fetch error:', error);
-        contentDiv.textContent = 'Failed to load data';
-    }
+                map.addLayer(markers);
+            },
+            error: function () {
+                alert("opendata error");
+            }
+        });
+    }, 60000); // 每60秒刷新一次
 }
 
 function initMap(lat, lng) {
