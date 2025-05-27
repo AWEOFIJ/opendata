@@ -5,7 +5,7 @@ fylat = 24.2543403;
 fylng = 120.7226995;
 
 $(function () {
-    navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 4e5, enableHighAccuracy: true, timeout: 6e3 });
+    navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 6e4, enableHighAccuracy: true, timeout: 6e3 });
 });
 
 // function goTestAPI() { 
