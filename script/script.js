@@ -7,8 +7,8 @@ fylng = 120.7226995;
 $(function () {
 
     // Get the current timestamp
-    let timestamp = new Date;
-    timestamp = timestamp.toUTCString();
+    // Convert the timestamp to UTC string format
+    var timestamp = Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours(), new Date().getMinutes(), new Date().getSeconds());
 
     // Get the current URL
     const currentUrl = window.location.href;
