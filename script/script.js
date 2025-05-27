@@ -5,7 +5,7 @@ fylat = 24.2543403;
 fylng = 120.7226995;
 
 $(function () {
-    navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 25000, enableHighAccuracy: true, timeout: 6e3 });
+    navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 4e5, enableHighAccuracy: true, timeout: 6e3 });
 });
 
 // function goTestAPI() { 
@@ -149,7 +149,7 @@ function reFreshPage(data) {
                     alert("opendata error");
                 }
             });
-        }, 60000); // 每60秒刷新一次
+        }, 6e4); // 每60秒刷新一次
 
     } catch (error) {
         console.error('Fetch error:', error);
