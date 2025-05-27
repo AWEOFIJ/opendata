@@ -42,4 +42,4 @@ class Dag {
 }
 
 let dag = new Dag();
-setInterval(dag.topological_ordering(), 60000);
+dag.topological_ordering();
