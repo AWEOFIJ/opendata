@@ -11,9 +11,8 @@ $(function () {
     const now = new Date();
     let timestamp = now.toISOString().replace(/[-:]/g, '').split('.')[0]; // Format: YYYYMMDDTHHMMSS
     timestamp = timestamp.replace('T', ''); // Remove the 'T' to get YYYYMMDDHHMMSS format
-
     console.log("Current timestamp:", timestamp);
-    
+
     // Append the timestamp to the current URL
     // var Url = window.location.href.includes('?')
     //     ? `${Url}&timestamp=${timestamp}`
