@@ -8,15 +8,17 @@ $(function () {
 
     // Get the current timestamp
     // Convert the timestamp to UTC string format
-    let timestamp = Date.now();
-    timestamp = timestamp.toUTCString();
+    const now = new Date();
+    let timestamp = now.toISOString().replace(/[-:]/g, '').split('.')[0]; // Format: YYYYMMDDTHHMMSS
+    timestamp = timestamp.replace('T', ''); // Remove the 'T' to get YYYYMMDDHHMMSS format
 
-    // Append the timestamp to the current URL
-    const appendUrl = window.location.href.includes('?')
-        ? `${currentUrl}&timestamp=${timestamp}`
-        : `${currentUrl}?timestamp=${timestamp}`;
+    console.log("Current timestamp:", timestamp);
     
-    console.log("Current URL with timestamp:", appendUrl);
+    // Append the timestamp to the current URL
+    // var Url = window.location.href.includes('?')
+    //     ? `${Url}&timestamp=${timestamp}`
+    //     : `${Url}?timestamp=${timestamp}`;
+    // console.log("Current URL with timestamp:", Url);
 
     alert("請允許瀏覽器定位功能，否則無法使用本服務。");
     // 監聽定位變化
