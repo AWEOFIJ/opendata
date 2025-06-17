@@ -19,11 +19,11 @@ $(function () {
     //     : `${Url}?timestamp=${timestamp}`;
     // console.log("Current URL with timestamp:", Url);
 
-    alert("請允許瀏覽器定位功能，否則無法使用本服務。");
-    // 監聽定位變化
     alert("即時訂位時間5分鐘!!");
-    
-    // navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
+
+    alert("請允許瀏覽器定位功能！");
+    // 監聽定位變化
+     navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
     // 使用 watchPosition 來持續監聽位置變化
     navigator.geolocation.watchPosition(success, fail, { maximumAge: 300000, enableHighAccuracy: true, timeout: 6000 });
 });
