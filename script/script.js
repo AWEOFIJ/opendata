@@ -23,7 +23,7 @@ $(function () {
 
     alert("請允許瀏覽器定位功能！");
     // 監聽定位變化
-     navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
+    // navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
     // 使用 watchPosition 來持續監聽位置變化
     navigator.geolocation.watchPosition(success, fail, { maximumAge: 300000, enableHighAccuracy: true, timeout: 6000 });
 });
