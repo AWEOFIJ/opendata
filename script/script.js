@@ -13,12 +13,6 @@ $(function () {
     timestamp = timestamp.replace('T', ''); // Remove the 'T' to get YYYYMMDDHHMMSS format
     console.log("Current timestamp:", timestamp);
 
-    // Append the timestamp to the current URL
-    // var Url = window.location.href.includes('?')
-    //     ? `${Url}&timestamp=${timestamp}`
-    //     : `${Url}?timestamp=${timestamp}`;
-    // console.log("Current URL with timestamp:", Url);
-
     // alert("即時訂位時間5分鐘!!");
     alert("請允許瀏覽器定位功能！");
     
