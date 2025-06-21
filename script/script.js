@@ -20,7 +20,7 @@ $(function () {
     // navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
     // 使用 watchPosition 來持續監聽位置變化
     
-    navigator.geolocation.watchPosition(success, fail, { maximumAge: 300000, enableHighAccuracy: true, timeout: 6000 });
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
 });
 
 function success(position) {
