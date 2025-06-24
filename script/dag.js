@@ -53,7 +53,7 @@ class Dag {
             }
         }
         
-        console.log(this.topo);
+        // console.log(this.topo);
     }
 }
 
