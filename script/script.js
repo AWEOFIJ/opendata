@@ -106,9 +106,9 @@ function show(data) {
 
     map.addLayer(markers);
 
-    setTimeout(() => {
-        reFreshPage(data);
-    }, 30000); // 預設30秒後刷新一次而且只有一次
+    // setTimeout(() => {
+    //     reFreshPage(data);
+    // }, 30000); // 預設30秒後刷新一次而且只有一次
 
 }
 
