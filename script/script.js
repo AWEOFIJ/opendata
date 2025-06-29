@@ -8,15 +8,19 @@ $(function () {
 
     // Get the current timestamp
     // Convert the timestamp to UTC string format
+    
+    const time = Date.now();
+    console.log("Current timeStamp: /* Format: YYYYMMDDTTHHMMSS */ ", time.toUTCString());
+
     const now = new Date();
+    
     let timestamp = now.toISOString().replace(/[-:]/g, '').split('.')[0]; // Format: YYYYMMDDTHHMMSS
     timestamp = timestamp.replace('T', ''); // Remove the 'T' to get YYYYMMDDHHMMSS format
-    console.log("Current timestamp:", timestamp);
-
-    // alert("即時訂位時間5分鐘!!");
+    console.log("Current timestamp: /* (ISO time) Format: YYYYMMDDTTHHMMSS */ ", timestamp);
+    
+    // 監聽定位變化
     alert("請允許瀏覽器定位功能！");
 
-    // 監聽定位變化
     // navigator.geolocation.getCurrentPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
     // 使用 watchPosition 來持續監聽位置變化
 
