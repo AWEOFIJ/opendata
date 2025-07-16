@@ -11,7 +11,7 @@ $(function () {
     const time = new Date();
 
     let timeStamp = time.toUTCString();
-    console.log("(This is UTC and only UTC.) Current timeStamp: ", timeStamp);
+    console.log("(This is UTC timestamp.) Current timeStamp: ", timeStamp);
 
     navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
 });
