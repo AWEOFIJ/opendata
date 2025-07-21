@@ -13,7 +13,7 @@ $(function () {
     let timeStamp = time.toUTCString();
     console.log("(This is UTC timestamp.) Current timeStamp: ", timeStamp);
 
-    navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 0, enableHighAccuracy: true, timeout: 6000 });
 });
 
 function success(position) {
