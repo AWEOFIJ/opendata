@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Garbage Truck Map</title>
+    <!-- Leaflet CSS from CDNJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+        integrity="sha512-kxUqrp7QrcgNwfl+IWdOv+bhRmsd9PgheGQwCJoXGyLBpGkXvwNb+6Cm4cfQR4wzS0TNL4rUDJ+OtOHP6LDnHg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Leaflet JS from CDNJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
+        integrity="sha512-uO9E5Py9kYFB47lKsSpHsodXOH6IJKzcsSohdhMjzN/Z2BI8ZP1vKn3p9kaU6fuXmzi0DdH8VkKmvH0kI5gtVw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- jQuery from CDNJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-3gJwYpE+Pta0V8WL+qKXGLi+rbvMyiRaVbdcDHjqUvwDE4lN3QosKkXnIPbgM4QKTElGAlpgQug0eHu8Ll0EEQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h2> Garbage Truck Coordinate Map</h2>
+    <div id="map"></div>
+
+    <script>
+        const truckData = {
+            "trucks": [
+                { "id": "GT001", "district": "Xinyi", "lat": 25.034, "lon": 121.564, "status": "Active" },
+                { "id": "GT002", "district": "Daan", "lat": 25.027, "lon": 121.543, "status": "Idle" }
+            ]
+        };
+
+        const map = L.map('map').setView([25.03, 121.55], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        truckData.trucks.forEach(truck => {
+            const marker = L.marker([truck.lat, truck.lon]).addTo(map);
+            marker.bindPopup(`<strong>${truck.id}</strong><br>${truck.district}<br>Status: ${truck.status}`);
+        });
+    </script>
+</body>
+
+</html>
