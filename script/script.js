@@ -109,13 +109,27 @@ function initMap(lat, lng) {
 }
 
 $(function () {
+    
+    if (!navigator.geolocation) {
+        alert("對不起，您的瀏覽器不支援定位功能!");
+        return;
+    }
 
-    const aes = alert("請允許瀏覽器定位功能！");
+    if (!L || !L.map) {
+        alert("對不起，Leaflet地圖庫載入錯誤!");
+        return;
+    }
+    
+    if (!L.markerClusterGroup) {
+        alert("對不起，Leaflet Marker Cluster載入錯誤!");
+        return;
+    }
+
     const time = new Date();
     const timeStamp = time.toUTCString();
 
     console.log("(This is UTC timestamp.) Current timeStamp: ", timeStamp);
 
-    if (aes) { navigator.geolocation.watchPosition(success, fail, { maximumAge: 0, enableHighAccuracy: true, timeout: 6000 }); }
+    if (alert("請允許瀏覽器定位功能！")) { navigator.geolocation.watchPosition(success, fail, { maximumAge: 36000, enableHighAccuracy: true, timeout: 36000 }); }
     else { alert("對不起，網頁資料讀取錯誤!"); }
 });
