@@ -42,11 +42,12 @@ function handleAPIs(apiConfigs, finalCallback) {
     }
 }
 
-// 示例API配置列表
+// 示例API配置列表 ...
 const apiConfigs = [
     { url: 'https://data.ntpc.gov.tw/api/datasets/edc3ad26-8ae7-4916-a00b-bc6048d19bf8/csv/file', method: 'GET' },  //新北市CSV資料
     { url: 'https://data.ntpc.gov.tw/api/datasets/edc3ad26-8ae7-4916-a00b-bc6048d19bf8/csv/file', method: 'POST', data: { key: 'value' } },  //JSON資料 高雄
-    { url: 'https://data.moenv.gov.tw/api/v2/stat_p_47?api_key=9e565f9a-84dd-4e79-9097-d403cae1ea75&limit=1000&sort=ImportDate%20desc&format=XML', method: 'GET' }  // XML資料 台北
+    { url: 'https://data.moenv.gov.tw/api/v2/stat_p_47?api_key=9e565f9a-84dd-4e79-9097-d403cae1ea75&limit=1000&sort=ImportDate%20desc&format=XML', method: 'GET' },  // XML資料 台北
+    {  }
 ];
 
 // 調用函數來處理API請求
