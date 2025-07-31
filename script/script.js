@@ -130,6 +130,6 @@ $(function () {
 
     console.log("(This is UTC timestamp.) Current timeStamp: ", timeStamp);
 
-    if ( confirm("請允許瀏覽器定位功能！") ) { navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 10000 }); }
-    else { alert("對不起，網頁資料讀取錯誤!"); }
+    if ( !confirm("請允許瀏覽器定位功能！") ) { alert("對不起，網頁資料讀取錯誤!"); }
+    else { navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 10000 }); }
 });
