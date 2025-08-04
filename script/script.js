@@ -82,10 +82,10 @@ function show(data) {
     map = data.map;
     markers = data.markers;
     markers.clearLayers();
-    markers.addLayer(L.marker([data.latitude, data.longitude], { icon: goldIcon }).bindPopup("定位完成!"));
+    markers.addLayer(L.marker([data.latitude, data.longitude], { markerColor: 'gold' }).bindPopup("定位完成!"));
     
     for (const data of data) {
-        markers.addLayer(L.marker([data.Y, data.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.car + '</h5></div><div class="card-body"><p>車號：' + data.car + '</p><p>地點：' + data.location + '</p><p>更新時間：' + data.time + '</p></div></div>'));
+        markers.addLayer(L.marker([data.Y, data.X], { markerColor: 'blue' }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.car + '</h5></div><div class="card-body"><p>車號：' + data.car + '</p><p>地點：' + data.location + '</p><p>更新時間：' + data.time + '</p></div></div>'));
     }
     
     map.addLayer(markers);
