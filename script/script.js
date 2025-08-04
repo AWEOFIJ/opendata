@@ -1,7 +1,6 @@
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
 var curlat, curlng, fylat, fylng, Mapdata, map;
 var goldIcon = new L.Icon({
-    // iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css',
     iconSize: [25, 41],
@@ -10,8 +9,6 @@ var goldIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 var blueIcon = new L.Icon({
-
-    // iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css',
     iconSize: [25, 41],
