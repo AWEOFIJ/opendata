@@ -1,20 +1,16 @@
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
 var curlat, curlng, fylat, fylng, Mapdata, map;
 var goldIcon = new L.Icon({
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css',
-    markerColor: 'gold',
-    icolor: 'gold',
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
 var blueIcon = new L.Icon({
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css',
-    markerColor: 'blue',
-    icolor: 'blue',
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -132,8 +128,7 @@ $(function () {
     const time = new Date();
     const timeStamp = time.toUTCString();
 
-    console.log("(This is UTC timestamp.) Current timeStamp: ", timeStamp);
+    console.log("(Current time: ", timeStamp);
 
-    if ( !confirm("請允許瀏覽器定位功能！") ) { alert("對不起，網頁資料讀取錯誤!"); }
-    else { navigator.geolocation.watchPosition(success, fail, { maximumAge: 10000, enableHighAccuracy: true, timeout: 1000 }); }
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 10000, enableHighAccuracy: true, timeout: 1000 });
 });
