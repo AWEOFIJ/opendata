@@ -128,7 +128,7 @@ $(function () {
     const time = new Date();
     const timeStamp = time.toUTCString();
 
-    console.log("(Current time: ", timeStamp);
+    console.log("Current time: ", timeStamp);
 
     navigator.geolocation.watchPosition(success, fail, { maximumAge: 10000, enableHighAccuracy: true, timeout: 1000 });
 });
