@@ -1,5 +1,5 @@
 const dataAPI = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
-var curlat, curlng, fylat, fylng, Mapdata, map;
+var curlat, curlng, fylat, fylng, Mapdata, map, markers;
 var goldIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -22,6 +22,33 @@ var blueIcon = new L.Icon({
 fylat = 24.2543403;
 fylng = 120.7226995;
 
+$(document).ready(function () {
+    if (!navigator.geolocation) {
+        alert("對不起，您的瀏覽器不支援定位功能!");
+        return;
+    }
+
+    if (!L || !L.map) {
+        alert("對不起，Leaflet地圖庫載入錯誤!");
+        return;
+    }
+
+    if (!L.markerClusterGroup) {
+        alert("對不起，Leaflet Marker Cluster載入錯誤!");
+        return;
+    }
+
+    const time = new Date();
+    const timeStamp = time.toUTCString();
+
+    console.log("Current time: ", timeStamp);
+
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 10000, enableHighAccuracy: true, timeout: 1000 });
+
+    document.getElementById("map").innerHTML = map;
+});
+
+
 function initMap(lat, lng) {
 
     const OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -34,11 +61,12 @@ function initMap(lat, lng) {
         layers: [OpenStreetMap]
     });
 
+    markers = L.markerClusterGroup().addTo(map);
+    
     map.addLayer(markers);
-
-    var markers = L.markerClusterGroup().addTo(map);
+    
     var initmap = { openStreetMap: OpenStreetMap, map: map, markers: markers };
-
+    
     return initmap;
 }
 
@@ -99,38 +127,11 @@ function show(data) {
     map = data.map;
     markers = data.markers;
     markers.clearLayers();
-    markers.addLayer(L.marker([data.latitude, data.longitude]).bindPopup("定位完成!"));
+    markers.addLayer(L.marker([data.latitude, data.longitude], { goldIcon }).addTo(map).bindPopup("定位完成!"));
 
     for (const data of data) {
-        markers.addLayer(L.marker([data.Y, data.X]).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.car + '</h5></div><div class="card-body"><p>車號：' + data.car + '</p><p>地點：' + data.location + '</p><p>更新時間：' + data.time + '</p></div></div>'));
+        markers.addLayer(L.marker([data.Y, data.X], { blueIcon }).addTo(map).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.car + '</h5></div><div class="card-body"><p>車號：' + data.car + '</p><p>地點：' + data.location + '</p><p>更新時間：' + data.time + '</p></div></div>'));
     }
 
     map.addLayer(markers);
 }
-
-$(function () {
-
-    if (!navigator.geolocation) {
-        alert("對不起，您的瀏覽器不支援定位功能!");
-        return;
-    }
-
-    if (!L || !L.map) {
-        alert("對不起，Leaflet地圖庫載入錯誤!");
-        return;
-    }
-
-    if (!L.markerClusterGroup) {
-        alert("對不起，Leaflet Marker Cluster載入錯誤!");
-        return;
-    }
-
-    const time = new Date();
-    const timeStamp = time.toUTCString();
-
-    console.log("Current time: ", timeStamp);
-
-    navigator.geolocation.watchPosition(success, fail, { maximumAge: 10000, enableHighAccuracy: true, timeout: 1000 });
-    
-    document.getElementById("map").innerHTML = map;
-});
