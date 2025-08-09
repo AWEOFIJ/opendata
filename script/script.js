@@ -22,23 +22,43 @@ var blueIcon = new L.Icon({
 fylat = 24.2543403;
 fylng = 120.7226995;
 
+function initMap(lat, lng) {
+
+    var OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+
+    map = L.map('map', {
+        center: [lat, lng],
+        zoom: 17,
+        layers: [OpenStreetMap]
+    });
+
+    map.addLayer(markers);
+
+    var markers = L.markerClusterGroup().addTo(map);
+    var initmap = { openStreetMap: OpenStreetMap, map: map, markers: markers };
+
+    return initmap;
+}
+
 function success(position) {
-    
+
     curlat = position.coords.latitude;
     curlng = position.coords.longitude;
     Mapdata = initMap(curlat, curlng);
-    
+
     $.ajax({
         type: "GET",
         url: dataAPI,
         dataType: "json",
         success: function (data) {
-            
+
             data.latitude = curlat;
             data.longitude = curlng;
             data.map = Mapdata.map;
             data.markers = Mapdata.markers;
-            
+
             show(data);
         },
         error: function () {
@@ -48,9 +68,9 @@ function success(position) {
 }
 
 function fail() {
-    
+
     Mapdata = initMap(fylat, fylng);
-    
+
     $.ajax({
         type: "GET",
         url: dataAPI,
@@ -65,51 +85,31 @@ function fail() {
 }
 
 function locateFailed(fylat, fylng, data, Mapdata) {
-    
+
     data.latitude = fylat;
     data.longitude = fylng;
     data.map = Mapdata.map;
     data.markers = Mapdata.markers;
-    
+
     show(data);
 }
- 
+
 function show(data) {
-    
+
     map = data.map;
     markers = data.markers;
     markers.clearLayers();
     markers.addLayer(L.marker([data.latitude, data.longitude]).bindPopup("定位完成!"));
-    
+
     for (const data of data) {
         markers.addLayer(L.marker([data.Y, data.X]).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.car + '</h5></div><div class="card-body"><p>車號：' + data.car + '</p><p>地點：' + data.location + '</p><p>更新時間：' + data.time + '</p></div></div>'));
     }
-    
-    map.addLayer(markers);
-}
 
-function initMap(lat, lng) {
-    
-    var OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
-    
-    map = L.map('map', {
-        center: [lat, lng],
-        zoom: 17,
-        layers: [OpenStreetMap]
-    });
-    
     map.addLayer(markers);
-    
-    var markers = L.markerClusterGroup().addTo(map);
-    var initmap = { openStreetMap: OpenStreetMap, map: map, markers: markers };
-    
-    return initmap;
 }
 
 $(function () {
-    
+
     if (!navigator.geolocation) {
         alert("對不起，您的瀏覽器不支援定位功能!");
         return;
@@ -119,7 +119,7 @@ $(function () {
         alert("對不起，Leaflet地圖庫載入錯誤!");
         return;
     }
-    
+
     if (!L.markerClusterGroup) {
         alert("對不起，Leaflet Marker Cluster載入錯誤!");
         return;
