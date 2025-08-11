@@ -48,7 +48,6 @@ $(document).ready(function () {
     document.getElementById("map").innerHTML = map;
 });
 
-
 function initMap(lat, lng) {
 
     const OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -62,12 +61,26 @@ function initMap(lat, lng) {
     });
 
     markers = L.markerClusterGroup().addTo(map);
-    
+
     map.addLayer(markers);
-    
+
     var initmap = { openStreetMap: OpenStreetMap, map: map, markers: markers };
-    
+
     return initmap;
+}
+
+function show(data) {
+
+    map = data.map;
+    markers = data.markers;
+    markers.clearLayers();
+    markers.addLayer(L.marker([data.latitude, data.longitude], {icon: goldIcon}).bindPopup("定位完成!"));
+
+    for (let i = 0; i < data.length; i++) {
+        markers.addLayer(L.marker([data[i].Y, data[i].X], { blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
+    }
+
+    map.addLayer(markers);
 }
 
 function success(position) {
@@ -95,6 +108,16 @@ function success(position) {
     });
 }
 
+function locateFailed(fylat, fylng, data, Mapdata) {
+
+    data.latitude = fylat;
+    data.longitude = fylng;
+    data.map = Mapdata.map;
+    data.markers = Mapdata.markers;
+
+    show(data);
+}
+
 function fail() {
 
     Mapdata = initMap(fylat, fylng);
@@ -110,28 +133,4 @@ function fail() {
             alert("opendata error");
         }
     });
-}
-
-function locateFailed(fylat, fylng, data, Mapdata) {
-
-    data.latitude = fylat;
-    data.longitude = fylng;
-    data.map = Mapdata.map;
-    data.markers = Mapdata.markers;
-
-    show(data);
-}
-
-function show(data) {
-
-    map = data.map;
-    markers = data.markers;
-    markers.clearLayers();
-    markers.addLayer(L.marker([data.latitude, data.longitude], { goldIcon }).addTo(map).bindPopup("定位完成!"));
-
-    for (const data of data) {
-        markers.addLayer(L.marker([data.Y, data.X], { blueIcon }).addTo(map).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data.car + '</h5></div><div class="card-body"><p>車號：' + data.car + '</p><p>地點：' + data.location + '</p><p>更新時間：' + data.time + '</p></div></div>'));
-    }
-
-    map.addLayer(markers);
 }
