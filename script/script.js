@@ -43,7 +43,7 @@ $(document).ready(function () {
 
     console.log("Current time: ", timeStamp);
 
-    navigator.geolocation.watchPosition(success, fail, { maximumAge: 10000, enableHighAccuracy: true, timeout: 1000 });
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
 
     document.getElementById("map").innerHTML = map;
 });
