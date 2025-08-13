@@ -22,32 +22,6 @@ var blueIcon = new L.Icon({
 fylat = 24.2543403;
 fylng = 120.7226995;
 
-$(document).ready(function () {
-    if (!navigator.geolocation) {
-        alert("對不起，您的瀏覽器不支援定位功能!");
-        return;
-    }
-
-    if (!L || !L.map) {
-        alert("對不起，Leaflet地圖庫載入錯誤!");
-        return;
-    }
-
-    if (!L.markerClusterGroup) {
-        alert("對不起，Leaflet Marker Cluster載入錯誤!");
-        return;
-    }
-
-    const time = new Date();
-    const timeStamp = time.toUTCString();
-
-    console.log("Current time: ", timeStamp);
-
-    navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
-
-    document.getElementById("map").innerHTML = map;
-});
-
 function initMap(lat, lng) {
 
     const OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -134,3 +108,29 @@ function fail() {
         }
     });
 }
+
+$(document).ready(function () {
+    if (!navigator.geolocation) {
+        alert("對不起，您的瀏覽器不支援定位功能!");
+        return;
+    }
+
+    if (!L || !L.map) {
+        alert("對不起，Leaflet地圖庫載入錯誤!");
+        return;
+    }
+
+    if (!L.markerClusterGroup) {
+        alert("對不起，Leaflet Marker Cluster載入錯誤!");
+        return;
+    }
+
+    const time = new Date();
+    const timeStamp = time.toUTCString();
+
+    console.log("Current time: ", timeStamp);
+
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
+
+    document.getElementById("map").innerHTML = map;
+});
