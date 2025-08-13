@@ -130,7 +130,7 @@ $(document).ready(function () {
 
     console.log("Current time: ", timeStamp);
 
-    navigator.geolocation.watchPosition(success, fail, { maximumAge: 60000, enableHighAccuracy: true, timeout: 6000 });
+    navigator.geolocation.watchPosition(success, fail, { maximumAge: 600000, enableHighAccuracy: true, timeout: 6000 });  //maximumAge: 600000 = 10 minutes, enableHighAccuracy: true, timeout: 6000 = 6 seconds
 
     document.getElementById("map").innerHTML = map;
 });
