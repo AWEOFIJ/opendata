@@ -128,9 +128,9 @@ $(document).ready(function () {
     const time = new Date();
     const timeStamp = time.toUTCString();
 
-    console.log("Current time: ", timeStamp);
+    console.log("Current time: ", time);
+    console.log("Current time (UTC): ", timeStamp);
 
     navigator.geolocation.watchPosition(success, fail, { maximumAge: 0, enableHighAccuracy: true, timeout: 6000 });  //maximumAge: 600000 = 10 minutes, enableHighAccuracy: true, timeout: 3000 = 3 seconds
-
     document.getElementById("map").innerHTML = map;
 });
