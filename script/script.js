@@ -45,16 +45,19 @@ function initMap(lat, lng) {
 
 function show(data) {
 
-    map = data.map;
-    markers = data.markers;
-    markers.clearLayers();
-    markers.addLayer(L.marker([data.latitude, data.longitude], {icon: goldIcon}).bindPopup("定位完成!"));
+    setInterval(function () {
+        map = data.map;
+        markers = data.markers;
+        markers.clearLayers();
+        markers.addLayer(L.marker([data.latitude, data.longitude], { icon: goldIcon }).bindPopup("定位完成!"));
 
-    for (let i = 0; i < data.length; i++) {
-        markers.addLayer(L.marker([data[i].Y, data[i].X], { blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
-    }
+        for (let i = 0; i < data.length; i++) {
+            markers.addLayer(L.marker([data[i].Y, data[i].X], { blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>'));
+        }
 
-    map.addLayer(markers);
+        map.addLayer(markers);
+    }, 120000);
+
 }
 
 function success(position) {
