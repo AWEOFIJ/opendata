@@ -114,7 +114,7 @@ function fail() {
 
 $(document).ready(function () {
     if (!navigator.geolocation) {
-        alert("對不起，您的瀏覽器不支援定位功能!");
+        alert("對不起，這個瀏覽器不支援定位功能!");
         return;
     }
 
