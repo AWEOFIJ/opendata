@@ -28,7 +28,7 @@ function initMap(lat, lng) {
         });
         map = L.map('map', {
             center: [lat, lng],
-            zoom: 15,
+            zoom: 17,
             layers: [OpenStreetMap]
         });
         markers = L.markerClusterGroup().addTo(map);
