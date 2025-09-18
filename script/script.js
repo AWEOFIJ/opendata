@@ -146,13 +146,14 @@ function startAutoRefresh(lat, lng, intervalMs) {
     if (refreshTimer) clearInterval(refreshTimer);
     refreshTimer = setInterval(function () {
         loadData(lat, lng);
+        /*  */
+        console.log("time stamp: " + new Date().toString());
+        /*  */
     }, intervalMs);
 }
 
 // 初始化與定位（無下拉選單，兩個來源同時顯示）
 $(document).ready(function () {
-
-    console.log("time stamp: " + new Date().toString());
 
     if (!navigator.geolocation) {
         initMap(fylat, fylng);
