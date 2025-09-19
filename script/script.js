@@ -84,7 +84,6 @@ function initMap(lat, lng) {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             reuseTiles: true,
             updateWhenIdle: true,
-            detectRetina: true,
             keepBuffer: 2
         });
         map = L.map('map', {
@@ -101,28 +100,48 @@ function initMap(lat, lng) {
 
 function loadData(lat, lng) {
     $('#api-content').html('載入中...');
-    fetchAllSources().then(function (allData) {
+    fetchAllSources(function (allData) {
         updateMarkers(lat, lng, allData);
         $('#api-content').html('<h5>共顯示 ' + allData.length + ' 筆資料（來自 ' + apiSources.length + ' 個來源）</h5>');
-    }).catch(function () {
-        $('#api-content').html('<div style="color:red;">資料載入失敗</div>');
     });
 }
 
-function fetchAllSources() {
-    const calls = apiSources.map(function (src) {
-        return $.ajax({ url: src.url, type: 'GET', dataType: 'json' })
-            .then(function (raw) {
-                const parsed = src.parse(raw);
-                return parsed.map(function (r) {
-                    return Object.assign({}, r, { city: src.name });
-                });
-            })
-            .catch(function () {
-                return [];
-            });
+function fetchAllSources(callback) {
+    var total = apiSources.length;
+    if (total === 0) {
+        callback([]);
+        return;
+    }
+    var results = new Array(total);
+    var completed = 0;
+
+    apiSources.forEach(function (src, idx) {
+        $.ajax({
+            url: src.url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (raw) {
+                try {
+                    var parsed = src.parse(raw) ? src.parse(raw) : [];
+                    results[idx] = parsed.map(function (r) {
+                        return Object.assign({}, r, { city: src.name });
+                    });
+                } catch (e) {
+                    results[idx] = [];
+                }
+            },
+            error: function () {
+                results[idx] = [];
+            },
+            complete: function () {
+                completed++;
+                if (completed === total) {
+                    var combined = [].concat.apply([], results);
+                    callback(combined);
+                }
+            }
+        });
     });
-    return Promise.all(calls).then(function (results) { return [].concat.apply([], results); });
 }
 
 function updateMarkers(lat, lng, combined) {
