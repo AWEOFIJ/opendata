@@ -78,6 +78,7 @@ const apiSources = [
     { id: 'kc', name: '高雄市', url: dataApiKc, parse: parseRecords }
 ];
 
+/* 這是對的 */
 function initMap(lat, lng) {
     if (!map) {
         const OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -100,10 +101,16 @@ function initMap(lat, lng) {
 
 function loadData(lat, lng) {
     $('#api-content').html('載入中...');
-    fetchAllSources(function (allData) {
+
+    const factorToFetchAllSources = function (allData) {
         updateMarkers(lat, lng, allData);
         $('#api-content').html('<h5>共顯示 ' + allData.length + ' 筆資料（來自 ' + apiSources.length + ' 個來源）</h5>');
-    });
+    }
+
+    /* 這個錯誤，有人會看不懂 */
+    fetchAllSources(factorToFetchAllSources);
+    /* 這個錯誤，有人會看不懂 */
+    
     /*  */
     console.log("time stamp: " + new Date().toString());
     /*  */
@@ -147,6 +154,7 @@ function fetchAllSources(callback) {
     });
 }
 
+/* 這是對的 */
 function updateMarkers(lat, lng, combined) {
     markers.clearLayers();
     // 顯示使用者位置
@@ -174,17 +182,17 @@ function startAutoRefresh(lat, lng, intervalMs) {
 // 初始化與定位（無下拉選單，兩個來源同時顯示）
 $(document).ready(function () {
 
-    /*  
+    /*
     
     if (!navigator.geolocation) {
         initMap(fylat, fylng);
         loadData(fylat, fylng);
         startAutoRefresh(fylat, fylng);
         return;
-    }  
+    }
     
     */
-    
+
     navigator.geolocation.getCurrentPosition(
         function (pos) {
             curlat = pos.coords.latitude;
