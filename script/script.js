@@ -104,6 +104,9 @@ function loadData(lat, lng) {
         updateMarkers(lat, lng, allData);
         $('#api-content').html('<h5>共顯示 ' + allData.length + ' 筆資料（來自 ' + apiSources.length + ' 個來源）</h5>');
     });
+    /*  */
+    console.log("time stamp: " + new Date().toString());
+    /*  */
 }
 
 function fetchAllSources(callback) {
@@ -165,33 +168,35 @@ function startAutoRefresh(lat, lng, intervalMs) {
     if (refreshTimer) clearInterval(refreshTimer);
     refreshTimer = setInterval(function () {
         loadData(lat, lng);
-        /*  */
-        console.log("time stamp: " + new Date().toString());
-        /*  */
     }, intervalMs);
 }
 
 // 初始化與定位（無下拉選單，兩個來源同時顯示）
 $(document).ready(function () {
 
+    /*  
+    
     if (!navigator.geolocation) {
         initMap(fylat, fylng);
         loadData(fylat, fylng);
         startAutoRefresh(fylat, fylng);
         return;
-    }
+    }  
+    
+    */
+    
     navigator.geolocation.getCurrentPosition(
         function (pos) {
             curlat = pos.coords.latitude;
             curlng = pos.coords.longitude;
             initMap(curlat, curlng);
-            loadData(curlat, curlng);
-            startAutoRefresh(curlat, curlng);
+            loadData(curlat, curlng);    /* 非常錯誤，非常錯誤 */
+            startAutoRefresh(curlat, curlng);    /* 非常錯誤，非常錯誤 */
         },
         function () {
             initMap(fylat, fylng);
-            loadData(fylat, fylng);
-            startAutoRefresh(fylat, fylng);
+            loadData(fylat, fylng);    /* 非常錯誤，非常錯誤 */
+            startAutoRefresh(fylat, fylng);    /* 非常錯誤，非常錯誤 */
         }
     );
 });
