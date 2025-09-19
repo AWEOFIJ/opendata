@@ -110,7 +110,7 @@ function loadData(lat, lng) {
     /* 這個錯誤，有人會看不懂 */
     fetchAllSources(factorToFetchAllSources);
     /* 這個錯誤，有人會看不懂 */
-    
+
     /*  */
     console.log("time stamp: " + new Date().toString());
     /*  */
@@ -182,6 +182,28 @@ function startAutoRefresh(lat, lng, intervalMs) {
 // 初始化與定位（無下拉選單，兩個來源同時顯示）
 $(document).ready(function () {
 
+    /* 這個錯誤，有人會看不懂，後果自負 */
+    const getLocation = (pos) => {
+        curlat = pos.coords.latitude;
+        curlng = pos.coords.longitude;
+        initMap(curlat, curlng);
+        loadData(curlat, curlng);
+
+        /* 後果自負 */
+        startAutoRefresh(fylat, fylng);    /* 非常錯誤，非常錯誤 */
+        /* 後果自負 */
+    }
+    /* 這個錯誤，有人會看不懂，後果自負 */
+
+    /* 這個有人誤會 */
+    const noLocation = () => {
+        initMap(fylat, fylng);
+        loadData(fylat, fylng);    /* 非常錯誤，非常錯誤 */
+        startAutoRefresh(fylat, fylng);    /* 非常錯誤，非常錯誤 */
+    }
+    /* 這個有人誤會 */
+
+    /* 這樣就好了，別寫了 */
     /*
     
     if (!navigator.geolocation) {
@@ -192,19 +214,8 @@ $(document).ready(function () {
     }
     
     */
+    /* 這樣就好了，別寫了 */
 
-    navigator.geolocation.getCurrentPosition(
-        function (pos) {
-            curlat = pos.coords.latitude;
-            curlng = pos.coords.longitude;
-            initMap(curlat, curlng);
-            loadData(curlat, curlng);    /* 非常錯誤，非常錯誤 */
-            startAutoRefresh(curlat, curlng);    /* 非常錯誤，非常錯誤 */
-        },
-        function () {
-            initMap(fylat, fylng);
-            loadData(fylat, fylng);    /* 非常錯誤，非常錯誤 */
-            startAutoRefresh(fylat, fylng);    /* 非常錯誤，非常錯誤 */
-        }
-    );
+    navigator.geolocation.getCurrentPosition(getLocation, noLocation);
+
 });
