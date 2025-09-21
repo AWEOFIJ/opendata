@@ -183,7 +183,7 @@ function startAutoRefresh(lat, lng, intervalMs) {
 $(document).ready(function () {
 
     /* 這個錯誤，有人會看不懂，後果自負 */
-    const getLocation = (pos) => {
+    const getLocation = function (pos) {
         curlat = pos.coords.latitude;
         curlng = pos.coords.longitude;
         initMap(curlat, curlng);
@@ -196,7 +196,7 @@ $(document).ready(function () {
     /* 這個錯誤，有人會看不懂，後果自負 */
 
     /* 這個有人誤會 */
-    const noLocation = () => {
+    const noLocation = function () {
         initMap(fylat, fylng);
         loadData(fylat, fylng);    /* 非常錯誤，非常錯誤 */
         startAutoRefresh(fylat, fylng);    /* 非常錯誤，非常錯誤 */
