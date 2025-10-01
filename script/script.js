@@ -19,10 +19,9 @@ var blueIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-// 共用解析器：兩個來源資料格式相同時使用
 function parseRecords(raw) {
     if (!raw) return [];
-    // 若回傳為 CKAN-style (result.records)
+
     if (raw.result && Array.isArray(raw.result.records)) {
         return raw.result.records.map(function (item) {
             return {
@@ -34,7 +33,7 @@ function parseRecords(raw) {
             };
         });
     }
-    // 若回傳直接就是陣列
+
     if (Array.isArray(raw)) {
         return raw.map(function (item) {
             return {
@@ -46,7 +45,7 @@ function parseRecords(raw) {
             };
         });
     }
-    // 常見包裝屬性
+
     if (raw.Data && Array.isArray(raw.Data)) {
         return raw.Data.map(function (item) {
             return {
@@ -69,7 +68,7 @@ function parseRecords(raw) {
             };
         });
     }
-    // fallback
+
     return [];
 }
 
@@ -94,128 +93,79 @@ function initMap(lat, lng) {
         });
         markers = L.markerClusterGroup().addTo(map);
     } else {
-        map.setView([lat, lng], 15);
+        map.setView([lat, lng], 17);
         markers.clearLayers();
     }
 }
 
-function loadData(lat, lng) {
-    $('#api-content').html('載入中...');
-
-    const factorToFetchAllSources = function (allData) {
-        updateMarkers(lat, lng, allData);
-        $('#api-content').html('<h5>共顯示 ' + allData.length + ' 筆資料（來自 ' + apiSources.length + ' 個來源）</h5>');
-    }
-
-    /* 這個錯誤，有人會看不懂 */
-    fetchAllSources(factorToFetchAllSources);
-    /* 這個錯誤，有人會看不懂 */
-
-    /*  */
-    console.log("time stamp: " + new Date().toString());
-    /*  */
-}
-
-function fetchAllSources(callback) {
-    var total = apiSources.length;
+function loadData() {
+    let total = apiSources.length;
     if (total === 0) {
-        callback([]);
         return;
     }
-    var results = new Array(total);
-    var completed = 0;
 
-    apiSources.forEach(function (src, idx) {
+    apiSources.forEach(function (src) {
         $.ajax({
             url: src.url,
             type: 'GET',
             dataType: 'json',
-            success: function (raw) {
-                try {
-                    var parsed = src.parse(raw) ? src.parse(raw) : [];
-                    results[idx] = parsed.map(function (r) {
-                        return Object.assign({}, r, { city: src.name });
-                    });
-                } catch (e) {
-                    results[idx] = [];
-                }
-            },
-            error: function () {
-                results[idx] = [];
-            },
-            complete: function () {
-                completed++;
-                if (completed === total) {
-                    var combined = [].concat.apply([], results);
-                    callback(combined);
-                }
+            success: function (data) {
+
+                curlat = data.data.Y ? data.data.Y : data.Y;
+                curlng = data.data.X ? data.data.X : data.X;
+
+                curlat = curlat ? curlat : fylat;
+                curlng = curlng ? curlng : fylng;
+
+                data = data.data ? data.data : data;
+
+                markers.clearLayers();
+                // 顯示使用者位置
+                markers.addLayer(L.marker([curlat, curlng], { icon: goldIcon }).bindPopup("定位完成!"));
+
+                updateMarkers(curlat, curlng, data);
             }
         });
     });
+
+    console.log("time stamp: " + new Date().toString());   /* timeStamp */
 }
 
 /* 這是對的 */
-function updateMarkers(lat, lng, combined) {
-    markers.clearLayers();
-    // 顯示使用者位置
-    markers.addLayer(L.marker([lat, lng], { icon: goldIcon }).bindPopup("定位完成!"));
-    for (let i = 0; i < combined.length; i++) {
-        const d = combined[i];
-        if (!d || isNaN(d.Y) || isNaN(d.X)) continue;
+function updateMarkers(curlat, curlng, data) {
+
+    for (let i = 0; i < data.length; i++) {
         markers.addLayer(
-            L.marker([d.Y, d.X], { icon: blueIcon }).bindPopup(
-                '<div class="card"><div class="card-head"><h5 class="card-title">' + (d.car || '未知') + '</h5></div><div class="card-body"><p>城市：' + (d.city || '') + '</p><p>車號：' + (d.car || '') + '</p><p>地點：' + (d.location || '') + '</p><p>更新時間：' + (d.time || '') + '</p></div></div>'
+            L.marker([curlat, curlng], { icon: blueIcon }).bindPopup(
+                '<div class="card"><div class="card-head"><h5 class="card-title">' + (data.car || '未知') + '</h5></div><div class="card-body"><p>城市：' + (data.city || '') + '</p><p>車號：' + (data.car || '') + '</p><p>地點：' + (data.location || '') + '</p><p>更新時間：' + (data.time || '') + '</p></div></div>'
             )
         );
     }
     if (!map.hasLayer(markers)) map.addLayer(markers);
 }
 
-function startAutoRefresh(lat, lng, intervalMs) {
-    if (intervalMs === undefined) intervalMs = 60 * 1000;
+function startAutoRefresh() {
+    let intervalMs = 60 * 1000;
     if (refreshTimer) clearInterval(refreshTimer);
     refreshTimer = setInterval(function () {
-        loadData(lat, lng);
+        loadData();
     }, intervalMs);
 }
 
-// 初始化與定位（無下拉選單，兩個來源同時顯示）
+function getLocation(curlat, curlng) {
+    initMap(curlat, curlng);
+    loadData();
+    startAutoRefresh();
+}
+
+function defaultloCation() {
+    initMap(fylat, fylng);
+    loadData();
+    startAutoRefresh();
+}
+
 $(document).ready(function () {
 
-    /* 這個錯誤，有人會看不懂，後果自負 */
-    const getLocation = function (pos) {
-        curlat = pos.coords.latitude;
-        curlng = pos.coords.longitude;
-        initMap(curlat, curlng);
-        loadData(curlat, curlng);
-
-        /* 後果自負 */
-        startAutoRefresh(fylat, fylng);    /* 非常錯誤，非常錯誤 */
-        /* 後果自負 */
-    }
-    /* 這個錯誤，有人會看不懂，後果自負 */
-
-    /* 這個有人誤會 */
-    const noLocation = function () {
-        initMap(fylat, fylng);
-        loadData(fylat, fylng);    /* 非常錯誤，非常錯誤 */
-        startAutoRefresh(fylat, fylng);    /* 非常錯誤，非常錯誤 */
-    }
-    /* 這個有人誤會 */
-
-    /* 這樣就好了，別寫了 */
-    /*
-    
-    if (!navigator.geolocation) {
-        initMap(fylat, fylng);
-        loadData(fylat, fylng);
-        startAutoRefresh(fylat, fylng);
-        return;
-    }
-    
-    */
-    /* 這樣就好了，別寫了 */
-
-    navigator.geolocation.getCurrentPosition(getLocation, noLocation);
+    navigator.geolocation.getCurrentPosition(getLocation(curlat, curlng), defaultloCation);
 
 });
