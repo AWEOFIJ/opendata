@@ -1,7 +1,9 @@
-const dataApiTc = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
-const dataApiKc = "https://openapi.kcg.gov.tw/Api/Service/Get/aaf4ce4b-4ca8-43de-bfaf-6dc97e89cac0";
+const dataAPITC = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
+const dataAPIKC = "https://openapi.kcg.gov.tw/Api/Service/Get/aaf4ce4b-4ca8-43de-bfaf-6dc97e89cac0";
+const dataAPI = [{ name: "臺中市", url: dataAPITC }, { name: "高雄市", url: dataAPIKC }];
 
 var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map, markers, refreshTimer = null;
+
 var goldIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -141,11 +143,28 @@ function updateMarkers(curlat, curlng, data) {
             )
         );
     }
-    if (!map.hasLayer(markers)) map.addLayer(markers);
+    map.addLayer(markers);
 }
 
-function startAutoRefresh() {
-    let intervalMs = 60 * 1000;
+function loadData(lat, lng) {
+
+    dataAPI.forEach(
+        $.ajax({
+            type: "GET",
+            url: dataAPI.url,
+            dataType: "json",
+            success: function (data) {
+                data = data.data ? data.data : data;    /*  */  /* 臺中市與高雄市API回傳格式不同 */
+                updateMarkers(lat, lng, data);
+            },
+            error: function () {
+                alert("opendata error");
+            }
+        })
+    );
+}
+
+function startAutoRefresh(lat, lng) {
     if (refreshTimer) clearInterval(refreshTimer);
     refreshTimer = setInterval(function () {
         loadData();
