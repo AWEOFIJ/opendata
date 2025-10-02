@@ -21,62 +21,9 @@ var blueIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-function parseRecords(raw) {
-    if (!raw) return [];
-
-    if (raw.result && Array.isArray(raw.result.records)) {
-        return raw.result.records.map(function (item) {
-            return {
-                Y: parseFloat(item.Y || item.y || item.latitude || item.lat || 0),
-                X: parseFloat(item.X || item.x || item.longitude || item.lng || 0),
-                car: item.car || item.車號 || item.車輛編號 || item.VehicleId || '未知',
-                location: item.location || item.地點 || item.address || item.Address || '',
-                time: item.time || item.更新時間 || item.UpdateTime || item.Date || ''
-            };
-        });
-    }
-
-    if (Array.isArray(raw)) {
-        return raw.map(function (item) {
-            return {
-                Y: parseFloat(item.Y || item.y || item.latitude || item.lat || 0),
-                X: parseFloat(item.X || item.x || item.longitude || item.lng || 0),
-                car: item.car || item.車號 || item.車輛編號 || item.VehicleId || '未知',
-                location: item.location || item.地點 || item.address || item.Address || '',
-                time: item.time || item.更新時間 || item.UpdateTime || item.Date || ''
-            };
-        });
-    }
-
-    if (raw.Data && Array.isArray(raw.Data)) {
-        return raw.Data.map(function (item) {
-            return {
-                Y: parseFloat(item.Y || item.y || item.latitude || item.lat || 0),
-                X: parseFloat(item.X || item.x || item.longitude || item.lng || 0),
-                car: item.car || '未知',
-                location: item.location || '',
-                time: item.time || ''
-            };
-        });
-    }
-    if (raw.data && Array.isArray(raw.data)) {
-        return raw.data.map(function (item) {
-            return {
-                Y: parseFloat(item.Y || item.y || item.latitude || item.lat || 0),
-                X: parseFloat(item.X || item.x || item.longitude || item.lng || 0),
-                car: item.car || item.車號 || item.車輛編號 || '未知',
-                location: item.location || item.地點 || item.address || '',
-                time: item.time || item.更新時間 || item.Date || ''
-            };
-        });
-    }
-
-    return [];
-}
-
 const apiSources = [
-    { id: 'tc', name: '台中市', url: dataApiTc, parse: parseRecords },
-    { id: 'kc', name: '高雄市', url: dataApiKc, parse: parseRecords }
+    { id: 'tc', name: '台中市', url: dataApiTc },
+    { id: 'kc', name: '高雄市', url: dataApiKc }
 ];
 
 /* 這是對的 */
@@ -94,6 +41,11 @@ function initMap(lat, lng) {
             layers: [OpenStreetMap]
         });
         markers = L.markerClusterGroup().addTo(map);
+
+        markers.clearLayers();
+        // 顯示使用者位置
+        markers.addLayer(L.marker([curlat, curlng], { icon: goldIcon }).bindPopup("定位完成!"));
+
     } else {
         map.setView([lat, lng], 17);
         markers.clearLayers();
@@ -101,34 +53,20 @@ function initMap(lat, lng) {
 }
 
 function loadData() {
-    let total = apiSources.length;
-    if (total === 0) {
-        return;
-    }
 
-    apiSources.forEach(function (src) {
+    dataAPI.forEach(
         $.ajax({
-            url: src.url,
+            url: dataAPI.url,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
 
-                curlat = data.data.Y ? data.data.Y : data.Y;
-                curlng = data.data.X ? data.data.X : data.X;
-
-                curlat = curlat ? curlat : fylat;
-                curlng = curlng ? curlng : fylng;
-
                 data = data.data ? data.data : data;
-
-                markers.clearLayers();
-                // 顯示使用者位置
-                markers.addLayer(L.marker([curlat, curlng], { icon: goldIcon }).bindPopup("定位完成!"));
 
                 updateMarkers(curlat, curlng, data);
             }
-        });
-    });
+        })
+    );
 
     console.log("time stamp: " + new Date().toString());   /* timeStamp */
 }
@@ -138,9 +76,8 @@ function updateMarkers(curlat, curlng, data) {
 
     for (let i = 0; i < data.length; i++) {
         markers.addLayer(
-            L.marker([curlat, curlng], { icon: blueIcon }).bindPopup(
-                '<div class="card"><div class="card-head"><h5 class="card-title">' + (data.car || '未知') + '</h5></div><div class="card-body"><p>城市：' + (data.city || '') + '</p><p>車號：' + (data.car || '') + '</p><p>地點：' + (data.location || '') + '</p><p>更新時間：' + (data.time || '') + '</p></div></div>'
-            )
+            L.marker([data[i].Y, data[i].X], { icon: blueIcon })
+                .bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>')
         );
     }
     map.addLayer(markers);
