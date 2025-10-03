@@ -2,7 +2,7 @@ const dataAPITC = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-
 const dataAPIKC = "https://openapi.kcg.gov.tw/Api/Service/Get/aaf4ce4b-4ca8-43de-bfaf-6dc97e89cac0";
 const dataAPI = [{ name: "臺中市", url: dataAPITC }, { name: "高雄市", url: dataAPIKC }];
 
-var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map, markers, refreshTimer = null;
+var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map, markers;
 
 var goldIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
@@ -54,61 +54,56 @@ function initMap(lat, lng) {
 
 function loadData() {
 
-    dataAPI.forEach(
+    dataAPI.forEach(function (api) {
         $.ajax({
-            url: dataAPI.url,
+            url: api.url,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
 
                 data = data.data ? data.data : data;
 
-                updateMarkers(curlat, curlng, data);
+                let objLat = [];
+                let objLng = [];
+                //
+
+                data.forEach(function (item) {
+                    objLat.push(item.latitude);
+                    objLng.push(item.longitude);
+                });
+
+                updateMarkers(objLat, objLng, data);
             }
         })
-    );
+    });
 
     console.log("time stamp: " + new Date().toString());   /* timeStamp */
 }
 
 /* 這是對的 */
-function updateMarkers(curlat, curlng, data) {
+function updateMarkers(objLat, objLng, data) {
 
     for (let i = 0; i < data.length; i++) {
         markers.addLayer(
-            L.marker([data[i].Y, data[i].X], { icon: blueIcon })
+            L.marker([objLat[i], objLng[i]], { icon: blueIcon })
                 .bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>')
         );
     }
     map.addLayer(markers);
 }
 
-function loadData(lat, lng) {
+function startAutoRefresh() {
 
-    dataAPI.forEach(
-        $.ajax({
-            type: "GET",
-            url: dataAPI.url,
-            dataType: "json",
-            success: function (data) {
-                data = data.data ? data.data : data;    /*  */  /* 臺中市與高雄市API回傳格式不同 */
-                updateMarkers(lat, lng, data);
-            },
-            error: function () {
-                alert("opendata error");
-            }
-        })
-    );
-}
-
-function startAutoRefresh(lat, lng) {
-    if (refreshTimer) clearInterval(refreshTimer);
-    refreshTimer = setInterval(function () {
+    setInterval(function () {
         loadData();
-    }, intervalMs);
+    }, 60 * 1000);
+
 }
 
-function getLocation(curlat, curlng) {
+function getLocation(position) {
+    curlat = position.coords.latitude;
+    curlng = position.coords.longitude;
+
     initMap(curlat, curlng);
     loadData();
     startAutoRefresh();
@@ -122,6 +117,6 @@ function defaultloCation() {
 
 $(document).ready(function () {
 
-    navigator.geolocation.getCurrentPosition(getLocation(curlat, curlng), defaultloCation);
+    navigator.geolocation.getCurrentPosition(getLocation, defaultloCation);
 
 });
