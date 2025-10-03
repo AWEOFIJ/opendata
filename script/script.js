@@ -1,6 +1,6 @@
-const dataAPITC = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
-const dataAPIKC = "https://openapi.kcg.gov.tw/Api/Service/Get/aaf4ce4b-4ca8-43de-bfaf-6dc97e89cac0";
-const dataAPI = [{ name: "臺中市", url: dataAPITC }, { name: "高雄市", url: dataAPIKC }];
+const apiTC = "https://datacenter.taichung.gov.tw/swagger/OpenData/c923ad20-2ec6-43b9-b3ab-54527e99f7bc";
+const apiKC = "https://openapi.kcg.gov.tw/Api/Service/Get/aaf4ce4b-4ca8-43de-bfaf-6dc97e89cac0";
+const apiSource = [{ name: "臺中市", url: apiTC }, { name: "高雄市", url: apiKC }];
 
 var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map, markers;
 
@@ -54,14 +54,14 @@ function initMap(lat, lng) {
 
 function loadData() {
 
-    dataAPI.forEach(function (api) {
+    apiSource.forEach(function (api) {
         $.ajax({
             url: api.url,
             type: 'GET',
             dataType: 'json',
-            success: function (data) {
+            success: function (jsonData) {
 
-                data = data.data ? data.data : data;
+                data = jsonData.data !== null ? jsonData.data : jsonData;
 
                 let objLat = [];
                 let objLng = [];
