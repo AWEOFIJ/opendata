@@ -44,7 +44,7 @@ function initMap(lat, lng) {
 
         markers.clearLayers();
         // 顯示使用者位置
-        markers.addLayer(L.marker([curlat, curlng], { icon: goldIcon }).bindPopup("定位完成!"));
+        markers.addLayer(L.marker([lat, lng], { icon: goldIcon }).bindPopup("定位完成!"));
 
     } else {
         map.setView([lat, lng], 17);
@@ -64,13 +64,13 @@ function loadData() {
             dataType: 'json',
             success: function (jsonData) {
 
-                data = jsonData.data !== null ? jsonData.data : jsonData;
+                data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
 
 
                 data.forEach(function (item) {
-                    objLat.push(item.latitude);
-                    objLng.push(item.longitude);
+                    objLat.push(item.Y);
+                    objLng.push(item.X);
                 });
 
                 updateMarkers(objLat, objLng, data);
@@ -104,6 +104,9 @@ function startAutoRefresh() {
 function getLocation(position) {
     curlat = position.coords.latitude;
     curlng = position.coords.longitude;
+
+    console.log(position);
+    console.log("lat: " + curlat + ", lng: " + curlng);
 
     initMap(curlat, curlng);
     loadData();
