@@ -54,9 +54,6 @@ function initMap(lat, lng) {
 
 function loadData() {
 
-    let objLat = [];
-    let objLng = [];
-
     apiSource.forEach(function (api) {
         $.ajax({
             url: api.url,
@@ -66,11 +63,14 @@ function loadData() {
 
                 data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
-
+                let objLat = [];
+                let objLng = [];
 
                 data.forEach(function (item) {
-                    objLat.push(item.Y);
-                    objLng.push(item.X);
+
+                    if (item.Y !== undefined) { objLat.push(item.Y); }
+                    if (item.X !== undefined) { objLng.push(item.X); }
+
                 });
 
                 updateMarkers(objLat, objLng, data);
@@ -104,9 +104,6 @@ function startAutoRefresh() {
 function getLocation(position) {
     curlat = position.coords.latitude;
     curlng = position.coords.longitude;
-
-    console.log(position);
-    console.log("lat: " + curlat + ", lng: " + curlng);
 
     initMap(curlat, curlng);
     loadData();
