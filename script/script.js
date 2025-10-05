@@ -105,8 +105,8 @@ function getLocation(position) {
     curlat = position.coords.latitude;
     curlng = position.coords.longitude;
 
-    console.log(position);
-    console.log("lat: " + curlat + ", lng: " + curlng);
+    // console.log(position);
+    // console.log("lat: " + curlat + ", lng: " + curlng);
 
     initMap(curlat, curlng);
     loadData();
