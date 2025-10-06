@@ -25,8 +25,6 @@ var blueIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-
-/* 這是對的 */
 function initMap(lat, lng) {
 
     let userMarkers;
@@ -44,7 +42,7 @@ function initMap(lat, lng) {
             layers: [OpenStreetMap]
         });
         userMarkers = L.markerClusterGroup().addTo(map);
-        // 顯示使用者位置
+
         userMarkers.addLayer(L.marker([lat, lng], { icon: goldIcon }).bindPopup("定位完成!"));
 
     } else {
@@ -85,28 +83,21 @@ function loadData() {
     });
 
     console.log("time stamp: " + new Date().toString());   /* timeStamp */
-
-    // Example usage:
-    // const timestamp = "20251006T173726";
-    // console.log(formatTimestamp(timestamp)); // Output: "2025-10-06 17:37:26"
 }
 
 function formatTimestamp(ts) {
     const [datePart, timePart] = ts.split('T');
 
-    // Parse date part (YYYY/MM/DD)
     const yearStr = datePart.slice(0, 4);
     const monthStr = datePart.slice(4, 6);
     const dayStr = datePart.slice(6, 8);
 
-    // Parse time part (HH:MM:SS)
     const hourStr = timePart.slice(0, 2);
     const minStr = timePart.slice(2, 4);
     const secStr = timePart.slice(4, 6);
 
-    // Create Date object
     const year = parseInt(yearStr, 10);
-    const monthIndex = parseInt(monthStr, 10) - 1; // Convert to zero-based
+    const monthIndex = parseInt(monthStr, 10) - 1; 
     const day = parseInt(dayStr, 10);
     const hour = parseInt(hourStr, 10);
     const minute = parseInt(minStr, 10);
@@ -114,7 +105,6 @@ function formatTimestamp(ts) {
 
     const dateObj = new Date(year, monthIndex, day, hour, minute, second);
 
-    // Format with leading zeros
     return `${dateObj.getFullYear()}/${String((monthIndex + 1)).padStart(2, '0')}/${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
 }
 
