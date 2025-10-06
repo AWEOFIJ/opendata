@@ -6,7 +6,7 @@ const apiSource = [
     { id: 'kc', name: '高雄市', url: apiKC }
 ];
 
-var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map, markers;
+var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map;
 
 var goldIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
@@ -28,6 +28,9 @@ var blueIcon = new L.Icon({
 
 /* 這是對的 */
 function initMap(lat, lng) {
+
+    let userMarkers;
+
     if (!map) {
         const OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -40,15 +43,13 @@ function initMap(lat, lng) {
             zoom: 17,
             layers: [OpenStreetMap]
         });
-        markers = L.markerClusterGroup().addTo(map);
-
-        markers.clearLayers();
+        userMarkers = L.markerClusterGroup().addTo(map);
         // 顯示使用者位置
-        markers.addLayer(L.marker([lat, lng], { icon: goldIcon }).bindPopup("定位完成!"));
+        userMarkers.addLayer(L.marker([lat, lng], { icon: goldIcon }).bindPopup("定位完成!"));
 
     } else {
         map.setView([lat, lng], 17);
-        markers.clearLayers();
+        userMarkers.clearLayers();
     }
 }
 
@@ -61,43 +62,67 @@ function loadData() {
             dataType: 'json',
             success: function (jsonData) {
 
+                let truckMarkers = L.markerClusterGroup().addTo(map);
+
                 data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
-                let objLat = [];
-                let objLng = [];
+                for (let i in data) {
+                    if (data[i].time !== undefined) { data[i].time = formatTimestamp(data[i].time); }
+                }
 
                 data.forEach(function (item) {
 
-                    if (item.Y !== undefined) { objLat.push(item.Y); }
-                    if (item.X !== undefined) { objLng.push(item.X); }
+                    truckMarkers.addLayer(
+                        L.marker([item.Y, item.X], { icon: blueIcon })
+                            .bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>')
+                    );
 
                 });
 
-                updateMarkers(objLat, objLng, data);
+                map.addLayer(truckMarkers);
             }
         })
     });
 
     console.log("time stamp: " + new Date().toString());   /* timeStamp */
+
+    // Example usage:
+    // const timestamp = "20251006T173726";
+    // console.log(formatTimestamp(timestamp)); // Output: "2025-10-06 17:37:26"
 }
 
-/* 這是對的 */
-function updateMarkers(objLat, objLng, data) {
+function formatTimestamp(ts) {
+    const [datePart, timePart] = ts.split('T');
 
-    for (let i = 0; i < data.length; i++) {
-        markers.addLayer(
-            L.marker([objLat[i], objLng[i]], { icon: blueIcon })
-                .bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + data[i].car + '</h5></div><div class="card-body"><p>車號：' + data[i].car + '</p><p>地點：' + data[i].location + '</p><p>更新時間：' + data[i].time + '</p></div></div>')
-        );
-    }
-    map.addLayer(markers);
+    // Parse date part (YYYY/MM/DD)
+    const yearStr = datePart.slice(0, 4);
+    const monthStr = datePart.slice(4, 6);
+    const dayStr = datePart.slice(6, 8);
+
+    // Parse time part (HH:MM:SS)
+    const hourStr = timePart.slice(0, 2);
+    const minStr = timePart.slice(2, 4);
+    const secStr = timePart.slice(4, 6);
+
+    // Create Date object
+    const year = parseInt(yearStr, 10);
+    const monthIndex = parseInt(monthStr, 10) - 1; // Convert to zero-based
+    const day = parseInt(dayStr, 10);
+    const hour = parseInt(hourStr, 10);
+    const minute = parseInt(minStr, 10);
+    const second = parseInt(secStr, 10);
+
+    const dateObj = new Date(year, monthIndex, day, hour, minute, second);
+
+    // Format with leading zeros
+    return `${dateObj.getFullYear()}/${String((monthIndex + 1)).padStart(2, '0')}/${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
 }
 
-function startAutoRefresh() {
+function startAutoRefresh(intervalMs = 60) {
 
     setInterval(function () {
         loadData();
-    }, 60 * 1000);
+    }, intervalMs * 1000);
 
 }
 
@@ -106,13 +131,11 @@ function getLocation(position) {
     curlng = position.coords.longitude;
 
     initMap(curlat, curlng);
-    loadData();
     startAutoRefresh();
 }
 
 function defaultloCation() {
     initMap(fylat, fylng);
-    loadData();
     startAutoRefresh();
 }
 
