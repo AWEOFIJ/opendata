@@ -52,6 +52,7 @@ function initMap(lat, lng) {
         userMarkers = L.markerClusterGroup().addTo(map);
 
         userMarkers.addLayer(L.marker([lat, lng], { icon: redIcon }).bindPopup("定位完成!"));
+        map.addLayer(userMarkers);
 
     } else {
         map.setView([lat, lng], 17);
@@ -68,21 +69,22 @@ function loadData() {
             dataType: 'json',
             success: function (jsonData) {
 
-                let truckMarkers = L.markerClusterGroup().addTo(map);
+                let truckMarkers = L.markerClusterGroup();
+
+                // truckMarkers.clearLayers();
 
                 data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
                 for (let i in data) {
                     if (data[i].time !== undefined) { data[i].time = formatTimestamp(data[i].time); }
+                    if (data[i].x !== undefined) { data[i].X = data[i].x; delete data[i].x; }
+                    if (data[i].y !== undefined) { data[i].Y = data[i].y; delete data[i].y; }
                 }
 
                 data.forEach(function (item) {
 
-                    truckMarkers.addLayer(
-                        L.marker([item.Y, item.X], { icon: blueIcon })
-                            .bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>')
-                    );
-
+                    let truckMarker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
+                    truckMarkers.addLayer(truckMarker);
                 });
 
                 map.addLayer(truckMarkers);
@@ -94,26 +96,33 @@ function loadData() {
 }
 
 function formatTimestamp(ts) {
-    const [datePart, timePart] = ts.split('T');
+    let year, month, day, hour, minute, second;
 
-    const yearStr = datePart.slice(0, 4);
-    const monthStr = datePart.slice(4, 6);
-    const dayStr = datePart.slice(6, 8);
+    if (/^\d{8}T\d{6}$/.test(ts)) {
+        // 壓縮格式：20251007T071105
+        year = parseInt(ts.slice(0, 4), 10);
+        month = parseInt(ts.slice(4, 6), 10);
+        day = parseInt(ts.slice(6, 8), 10);
+        hour = parseInt(ts.slice(9, 11), 10);
+        minute = parseInt(ts.slice(11, 13), 10);
+        second = parseInt(ts.slice(13, 15), 10);
+    } else {
+        // 標準格式：2025-10-07T07:11:05
+        const [datePart, timePart] = ts.split('T');
+        const [yearStr, monthStr, dayStr] = datePart.split('-');
+        const [hourStr, minStr, secStr] = timePart.split(':');
 
-    const hourStr = timePart.slice(0, 2);
-    const minStr = timePart.slice(2, 4);
-    const secStr = timePart.slice(4, 6);
+        year = parseInt(yearStr, 10);
+        month = parseInt(monthStr, 10);
+        day = parseInt(dayStr, 10);
+        hour = parseInt(hourStr, 10);
+        minute = parseInt(minStr, 10);
+        second = parseInt(secStr, 10);
+    }
 
-    const year = parseInt(yearStr, 10);
-    const monthIndex = parseInt(monthStr, 10) - 1; 
-    const day = parseInt(dayStr, 10);
-    const hour = parseInt(hourStr, 10);
-    const minute = parseInt(minStr, 10);
-    const second = parseInt(secStr, 10);
+    const dateObj = new Date(year, month - 1, day, hour, minute, second);
 
-    const dateObj = new Date(year, monthIndex, day, hour, minute, second);
-
-    return `${dateObj.getFullYear()}/${String((monthIndex + 1)).padStart(2, '0')}/${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
+    return `${dateObj.getFullYear()}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
 }
 
 function startAutoRefresh(intervalMs = 60) {
