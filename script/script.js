@@ -71,8 +71,6 @@ function loadData() {
 
                 let truckMarkers = L.markerClusterGroup();
 
-                // truckMarkers.clearLayers();
-
                 data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
                 for (let i in data) {
@@ -99,7 +97,6 @@ function formatTimestamp(ts) {
     let year, month, day, hour, minute, second;
 
     if (/^\d{8}T\d{6}$/.test(ts)) {
-        // 壓縮格式：20251007T071105
         year = parseInt(ts.slice(0, 4), 10);
         month = parseInt(ts.slice(4, 6), 10);
         day = parseInt(ts.slice(6, 8), 10);
@@ -107,7 +104,6 @@ function formatTimestamp(ts) {
         minute = parseInt(ts.slice(11, 13), 10);
         second = parseInt(ts.slice(13, 15), 10);
     } else {
-        // 標準格式：2025-10-07T07:11:05
         const [datePart, timePart] = ts.split('T');
         const [yearStr, monthStr, dayStr] = datePart.split('-');
         const [hourStr, minStr, secStr] = timePart.split(':');
