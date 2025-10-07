@@ -6,7 +6,7 @@ const apiSource = [
     { id: 'kc', name: '高雄市', url: apiKC }
 ];
 
-var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map;
+var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map, Markers = L.markerClusterGroup();
 
 var goldIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
@@ -35,9 +35,8 @@ var blueIcon = new L.Icon({
 
 function initMap(lat, lng) {
 
-    let userMarkers;
-
     if (!map) {
+        
         const OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             reuseTiles: true,
@@ -49,14 +48,13 @@ function initMap(lat, lng) {
             zoom: 17,
             layers: [OpenStreetMap]
         });
-        userMarkers = L.markerClusterGroup().addTo(map);
 
-        userMarkers.addLayer(L.marker([lat, lng], { icon: redIcon }).bindPopup("定位完成!"));
-        map.addLayer(userMarkers);
+        Markers.addLayer(L.marker([lat, lng], { icon: redIcon }).bindPopup("定位完成!"));
+        Markers.addTo(map);
 
     } else {
         map.setView([lat, lng], 17);
-        userMarkers.clearLayers();
+        Markers.clearLayers();
     }
 }
 
@@ -69,10 +67,6 @@ function loadData(intervalMs = 60) {
             dataType: 'json',
             success: function (jsonData) {
 
-                let truckMarkers = L.markerClusterGroup();
-
-                // truckMarkers.clearLayers();
-
                 data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
                 for (let i in data) {
@@ -82,25 +76,27 @@ function loadData(intervalMs = 60) {
                 }
 
                 data.forEach(function (item) {
-
-                    let truckMarker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
-                    truckMarkers.addLayer(truckMarker);
+                    let Marker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
+                    Markers.addLayer(Marker);
                 });
 
-                map.addLayer(truckMarkers);
+                Markers.addTo(map);
             }
         })
     });
 
+    console.log("time stamp: " + new Date().toString());   /* timeStamp */
+
     setInterval(function () {
+        
+        Markers.clearLayers();
+
         apiSource.forEach(function (api) {
             $.ajax({
                 url: api.url,
                 type: 'GET',
                 dataType: 'json',
                 success: function (jsonData) {
-
-                    let truckMarkers = L.markerClusterGroup();
 
                     data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
@@ -111,18 +107,17 @@ function loadData(intervalMs = 60) {
                     }
 
                     data.forEach(function (item) {
-
-                        let truckMarker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
-                        truckMarkers.addLayer(truckMarker);
+                        let Marker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
+                        Markers.addLayer(Marker);
                     });
 
-                    map.addLayer(truckMarkers);
+                    Markers.addTo(map);
                 }
             })
         });
+        console.log("time stamp: " + new Date().toString());   /* timeStamp */
     }, intervalMs * 1000);
 
-    console.log("time stamp: " + new Date().toString());   /* timeStamp */
 }
 
 function formatTimestamp(ts) {
