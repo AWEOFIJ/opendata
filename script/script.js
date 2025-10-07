@@ -60,7 +60,7 @@ function initMap(lat, lng) {
     }
 }
 
-function loadData() {
+function loadData(intervalMs = 60) {
 
     apiSource.forEach(function (api) {
         $.ajax({
@@ -89,6 +89,36 @@ function loadData() {
             }
         })
     });
+
+    setInterval(function () {
+        apiSource.forEach(function (api) {
+            $.ajax({
+                url: api.url,
+                type: 'GET',
+                dataType: 'json',
+                success: function (jsonData) {
+
+                    let truckMarkers = L.markerClusterGroup();
+
+                    data = jsonData.data !== undefined ? jsonData.data : jsonData;
+
+                    for (let i in data) {
+                        if (data[i].time !== undefined) { data[i].time = formatTimestamp(data[i].time); }
+                        if (data[i].x !== undefined) { data[i].X = data[i].x; delete data[i].x; }
+                        if (data[i].y !== undefined) { data[i].Y = data[i].y; delete data[i].y; }
+                    }
+
+                    data.forEach(function (item) {
+
+                        let truckMarker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
+                        truckMarkers.addLayer(truckMarker);
+                    });
+
+                    map.addLayer(truckMarkers);
+                }
+            })
+        });
+    }, intervalMs * 1000);
 
     console.log("time stamp: " + new Date().toString());   /* timeStamp */
 }
@@ -121,27 +151,17 @@ function formatTimestamp(ts) {
     return `${dateObj.getFullYear()}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
 }
 
-function startAutoRefresh(intervalMs = 60) {
-
-    setInterval(function () {
-        loadData();
-    }, intervalMs * 1000);
-
-}
-
 function getLocation(position) {
     curlat = position.coords.latitude;
     curlng = position.coords.longitude;
 
     initMap(curlat, curlng);
     loadData();
-    startAutoRefresh();
 }
 
 function defaultloCation() {
     initMap(fylat, fylng);
     loadData();
-    startAutoRefresh();
 }
 
 $(document).ready(function () {
