@@ -58,7 +58,7 @@ function initMap(lat, lng) {
     }
 }
 
-function loadData(intervalMs = 60) {
+function loadData(lat, lng, intervalMs = 60) {
 
     apiSource.forEach(function (api) {
         $.ajax({
@@ -90,6 +90,8 @@ function loadData(intervalMs = 60) {
     setInterval(function () {
         
         Markers.clearLayers();
+        Markers.addLayer(L.marker([lat, lng], { icon: redIcon }).bindPopup("定位完成!"));
+        Markers.addTo(map);
 
         apiSource.forEach(function (api) {
             $.ajax({
@@ -153,12 +155,12 @@ function getLocation(position) {
     curlng = position.coords.longitude;
 
     initMap(curlat, curlng);
-    loadData();
+    loadData(curlat, curlng);
 }
 
 function defaultloCation() {
     initMap(fylat, fylng);
-    loadData();
+    loadData(fylat, fylng);
 }
 
 $(document).ready(function () {
