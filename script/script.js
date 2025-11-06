@@ -70,9 +70,9 @@ function loadData(lat, lng, intervalMs = 60) {
                 data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
                 for (let i in data) {
-                    data[i].time = (data[i].time !== undefined) ? formatTimestamp(data[i].time) : data[i].time;
-                    data[i].X = (data[i].x !== undefined) ? data[i].x : data[i].X;
-                    data[i].Y = (data[i].y !== undefined) ? data[i].y : data[i].Y;
+                    data[i].time = data[i].time !== undefined ? formatTimestamp(data[i].time) : data[i].time;
+                    data[i].X = data[i].x !== undefined ? data[i].x : data[i].X;
+                    data[i].Y = data[i].y !== undefined ? data[i].y : data[i].Y;
                 }
 
                 data.forEach(function (item) {
