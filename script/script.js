@@ -6,7 +6,7 @@ const apiSource = [
     { id: 'kc', name: '高雄市', url: apiKC }
 ];
 
-var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map;
+var curlat, curlng, fylat = 24.2543403, fylng = 120.7226995, map, Markers = L.markerClusterGroup();
 
 var goldIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
@@ -35,9 +35,8 @@ var blueIcon = new L.Icon({
 
 function initMap(lat, lng) {
 
-    let userMarkers;
-
     if (!map) {
+        
         const OpenStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             reuseTiles: true,
@@ -49,17 +48,17 @@ function initMap(lat, lng) {
             zoom: 17,
             layers: [OpenStreetMap]
         });
-        userMarkers = L.markerClusterGroup().addTo(map);
 
-        userMarkers.addLayer(L.marker([lat, lng], { icon: redIcon }).bindPopup("定位完成!"));
+        Markers.addLayer(L.marker([lat, lng], { icon: redIcon }).bindPopup("定位完成!"));
+        Markers.addTo(map);
 
     } else {
         map.setView([lat, lng], 17);
-        userMarkers.clearLayers();
+        Markers.clearLayers();
     }
 }
 
-function loadData() {
+function loadData(lat, lng, intervalMs = 60) {
 
     apiSource.forEach(function (api) {
         $.ajax({
@@ -68,60 +67,87 @@ function loadData() {
             dataType: 'json',
             success: function (jsonData) {
 
-                let truckMarkers = L.markerClusterGroup().addTo(map);
-
                 data = jsonData.data !== undefined ? jsonData.data : jsonData;
 
                 for (let i in data) {
-                    if (data[i].time !== undefined) { data[i].time = formatTimestamp(data[i].time); }
+                    data[i].time = data[i].time !== undefined ? formatTimestamp(data[i].time) : data[i].time;
+                    data[i].X = data[i].x !== undefined ? data[i].x : data[i].X;
+                    data[i].Y = data[i].y !== undefined ? data[i].y : data[i].Y;
                 }
 
                 data.forEach(function (item) {
-
-                    truckMarkers.addLayer(
-                        L.marker([item.Y, item.X], { icon: blueIcon })
-                            .bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>')
-                    );
-
+                    let Marker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
+                    Markers.addLayer(Marker);
                 });
 
-                map.addLayer(truckMarkers);
+                Markers.addTo(map);
             }
         })
     });
 
     console.log("time stamp: " + new Date().toString());   /* timeStamp */
+
+    setInterval(function () {
+        
+        Markers.clearLayers();
+        Markers.addLayer(L.marker([lat, lng], { icon: redIcon }).bindPopup("定位完成!"));
+        Markers.addTo(map);
+
+        apiSource.forEach(function (api) {
+            $.ajax({
+                url: api.url,
+                type: 'GET',
+                dataType: 'json',
+                success: function (jsonData) {
+
+                    data = jsonData.data !== undefined ? jsonData.data : jsonData;
+
+                    for (let i in data) {
+                        if (data[i].time !== undefined) { data[i].time = formatTimestamp(data[i].time); }
+                        if (data[i].x !== undefined) { data[i].X = data[i].x; delete data[i].x; }
+                        if (data[i].y !== undefined) { data[i].Y = data[i].y; delete data[i].y; }
+                    }
+
+                    data.forEach(function (item) {
+                        let Marker = L.marker([item.Y, item.X], { icon: blueIcon }).bindPopup('<div class="card"><div class="card-head"><h5 class="card-title">' + item.car + '</h5></div><div class="card-body"><p>車號：' + item.car + '</p><p>地點：' + item.location + '</p><p>更新時間：' + item.time + '</p></div></div>');
+                        Markers.addLayer(Marker);
+                    });
+
+                    Markers.addTo(map);
+                }
+            })
+        });
+        console.log("time stamp: " + new Date().toString());   /* timeStamp */
+    }, intervalMs * 1000);
+
 }
 
 function formatTimestamp(ts) {
-    const [datePart, timePart] = ts.split('T');
+    let year, month, day, hour, minute, second;
 
-    const yearStr = datePart.slice(0, 4);
-    const monthStr = datePart.slice(4, 6);
-    const dayStr = datePart.slice(6, 8);
+    if (/^\d{8}T\d{6}$/.test(ts)) {
+        year = parseInt(ts.slice(0, 4), 10);
+        month = parseInt(ts.slice(4, 6), 10);
+        day = parseInt(ts.slice(6, 8), 10);
+        hour = parseInt(ts.slice(9, 11), 10);
+        minute = parseInt(ts.slice(11, 13), 10);
+        second = parseInt(ts.slice(13, 15), 10);
+    } else {
+        const [datePart, timePart] = ts.split('T');
+        const [yearStr, monthStr, dayStr] = datePart.split('-');
+        const [hourStr, minStr, secStr] = timePart.split(':');
 
-    const hourStr = timePart.slice(0, 2);
-    const minStr = timePart.slice(2, 4);
-    const secStr = timePart.slice(4, 6);
+        year = parseInt(yearStr, 10);
+        month = parseInt(monthStr, 10);
+        day = parseInt(dayStr, 10);
+        hour = parseInt(hourStr, 10);
+        minute = parseInt(minStr, 10);
+        second = parseInt(secStr, 10);
+    }
 
-    const year = parseInt(yearStr, 10);
-    const monthIndex = parseInt(monthStr, 10) - 1; 
-    const day = parseInt(dayStr, 10);
-    const hour = parseInt(hourStr, 10);
-    const minute = parseInt(minStr, 10);
-    const second = parseInt(secStr, 10);
+    const dateObj = new Date(year, month - 1, day, hour, minute, second);
 
-    const dateObj = new Date(year, monthIndex, day, hour, minute, second);
-
-    return `${dateObj.getFullYear()}/${String((monthIndex + 1)).padStart(2, '0')}/${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
-}
-
-function startAutoRefresh(intervalMs = 60) {
-
-    setInterval(function () {
-        loadData();
-    }, intervalMs * 1000);
-
+    return `${dateObj.getFullYear()}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
 }
 
 function getLocation(position) {
@@ -129,14 +155,12 @@ function getLocation(position) {
     curlng = position.coords.longitude;
 
     initMap(curlat, curlng);
-    loadData();
-    startAutoRefresh();
+    loadData(curlat, curlng);
 }
 
 function defaultloCation() {
     initMap(fylat, fylng);
-    loadData();
-    startAutoRefresh();
+    loadData(fylat, fylng);
 }
 
 $(document).ready(function () {
